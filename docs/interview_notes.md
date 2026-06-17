@@ -485,3 +485,261 @@ Before cloning, I checked whether the destination path already existed. If it co
 **Answer:**  
 A deterministic path makes repository reuse and caching easier. However, it must include enough repository identity, such as owner and repository name, to avoid collisions.
 
+## Step 5: Repository Ingestion Orchestration
+
+### What did I build?
+
+I created an ingestion orchestration layer that connects repository cloning with repository parsing.
+
+The ingestion function accepts a GitHub repository URL and returns a list of structured `CodeDocument` objects.
+
+### Pipeline
+
+GitHub URL  
+→ clone or reuse repository  
+→ obtain local repository path  
+→ parse supported files  
+→ return structured documents
+
+### Why keep orchestration separate?
+
+Cloning and parsing are independent components.
+
+The orchestration layer coordinates them without mixing their responsibilities.
+
+This improves:
+
+- separation of concerns
+- testability
+- maintainability
+- reusability
+- future API integration
+
+### Why return documents instead of printing everything?
+
+Returning documents allows the next pipeline component, such as chunking, to consume the result programmatically.
+
+Printing is only used for CLI feedback.
+
+### Why use dependency mocking in the test?
+
+The orchestration test should validate coordination logic rather than GitHub connectivity.
+
+Mocking makes the test:
+
+- fast
+- deterministic
+- offline
+- focused on one responsibility
+
+### Interview question
+
+**Question:** What is an orchestration layer?
+
+**Answer:**  
+An orchestration layer coordinates multiple lower-level components to complete a workflow. In this project, it connects repository acquisition and parsing while keeping their internal logic separate.
+
+### Interview question
+
+**Question:** Why not put parsing inside clone_repository?
+
+**Answer:**  
+Cloning and parsing have different responsibilities. A cloned repository may be parsed multiple times, and the parser may also process repositories obtained through other means. Keeping them separate improves reuse and testing.
+
+### Interview question
+
+**Question:** Is this a unit test or integration test?
+
+**Answer:**  
+The mocked orchestration test is a unit test because dependencies are isolated. Running the CLI against a real GitHub repository is an integration test because it exercises Git, filesystem operations and parsing together.
+
+### Resume relevance
+
+This step demonstrates:
+
+- modular pipeline design
+- orchestration
+- CLI development
+- dependency injection concepts
+- unit testing with mocks
+- separation of concerns
+
+from dataclasses import dataclass
+
+
+@dataclass
+class CodeChunk:
+    """
+    Represents a smaller retrievable section of a repository file.
+    """
+
+    content: str
+    file_path: str
+    file_name: str
+    language: str
+    start_line: int
+    end_line: int
+    chunk_index: int
+
+    ## Step 7: Line-Based Code Chunking
+
+### What did I build?
+
+I implemented a line-based chunking module that converts complete `CodeDocument` objects into smaller overlapping `CodeChunk` objects.
+
+Each chunk preserves:
+
+- source file path
+- file name
+- programming language
+- starting line
+- ending line
+- chunk position
+
+### Why is chunking required?
+
+A source file may contain several unrelated classes, functions and configuration sections.
+
+Embedding the entire file into one vector can dilute the meaning of individual code regions. Smaller chunks create more focused vector representations and improve retrieval precision.
+
+### Why start with line-based chunking?
+
+Line-based chunking is:
+
+- simple to implement
+- deterministic
+- language-independent
+- easy to test
+- a useful baseline
+
+It provides a working retrieval pipeline before introducing more complex AST-based chunking.
+
+### Why use overlap?
+
+Overlap preserves context around chunk boundaries.
+
+Without overlap, a function or logical block may be split between two chunks. Repeating a small number of lines in adjacent chunks reduces context loss.
+
+### What is the trade-off of overlap?
+
+Higher overlap improves context preservation but creates more duplicate content, more embeddings and a larger vector index.
+
+### Why validate chunk size and overlap?
+
+Invalid values can create zero or negative step sizes, causing incorrect iteration or runtime failures.
+
+The module requires:
+
+- chunk size greater than zero
+- overlap greater than or equal to zero
+- overlap smaller than chunk size
+
+### Interview question
+
+**Question:** Why did you choose line-based chunking instead of token-based chunking?
+
+**Answer:**  
+I started with line-based chunking because source code is naturally organized by lines and line numbers are needed for citations. It also provides a simple and explainable baseline. A later version can add token limits to ensure compatibility with embedding and LLM context windows.
+
+### Interview question
+
+**Question:** Why not directly start with AST-based chunking?
+
+**Answer:**  
+AST chunking gives better semantic boundaries, but it adds language-specific complexity. I first established a deterministic baseline, which allows me to measure whether AST-based chunking actually improves retrieval quality.
+
+### Interview question
+
+**Question:** How did you preserve source traceability?
+
+**Answer:**  
+Each chunk retains the original relative file path, language and exact start and end line numbers. This allows retrieved chunks to be mapped back to their source.
+
+### Resume relevance
+
+This component demonstrates:
+
+- text preprocessing
+- sliding-window algorithms
+- metadata preservation
+- configurable retrieval pipelines
+- validation and edge-case handling
+- baseline-first ML system design
+
+## Step 8: Connecting Ingestion with Chunking
+
+### What did I build?
+
+I extended the repository ingestion pipeline so that parsed `CodeDocument` objects are immediately converted into retrievable `CodeChunk` objects.
+
+The pipeline now performs:
+
+GitHub URL  
+→ repository clone  
+→ repository parsing  
+→ file filtering  
+→ document creation  
+→ overlapping chunk creation
+
+### What are the data types between stages?
+
+The pipeline uses clear typed boundaries:
+
+- repository URL: `str`
+- cloned repository location: `Path`
+- parsed files: `list[CodeDocument]`
+- retrievable sections: `list[CodeChunk]`
+
+These contracts make the pipeline easier to understand, test and extend.
+
+### Why return both documents and chunks?
+
+Documents are useful for repository-level statistics and debugging.
+
+Chunks are the units that will later be embedded and retrieved.
+
+Returning both allows the application to inspect ingestion results without losing file-level information.
+
+### Why avoid chunking when no documents are found?
+
+Calling later pipeline stages with empty data is unnecessary.
+
+The orchestration layer exits early and returns empty collections, preventing wasted computation and simplifying downstream behaviour.
+
+### What is orchestration?
+
+Orchestration is the coordination of multiple independent components into one workflow.
+
+The orchestration layer does not implement cloning, parsing or chunking itself. It calls those components in the required order and transfers their outputs between stages.
+
+### Interview question
+
+**Question:** What is the data flow in your ingestion pipeline?
+
+**Answer:**  
+The system accepts a repository URL, clones it to a deterministic local path, parses supported files into typed `CodeDocument` objects and then converts those documents into overlapping `CodeChunk` objects with source metadata and line boundaries.
+
+### Interview question
+
+**Question:** Why keep CodeDocument and CodeChunk as separate models?
+
+**Answer:**  
+A document represents the complete source file and belongs to the ingestion layer. A chunk represents the smaller unit that will be embedded and retrieved. Keeping them separate creates a clear transformation boundary and preserves file-level as well as chunk-level metadata.
+
+### Interview question
+
+**Question:** Are chunks persisted at this stage?
+
+**Answer:**  
+No. At this stage, documents and chunks exist only in application memory. Persistence is introduced later when embeddings are stored in FAISS and chunk metadata is stored alongside the vector index.
+
+### Resume relevance
+
+This step demonstrates:
+
+- typed data pipelines
+- multi-stage orchestration
+- integration testing with mocks
+- early-return patterns
+- memory versus persistence awareness
+- modular retrieval-system architecture

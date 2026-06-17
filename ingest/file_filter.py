@@ -49,6 +49,7 @@ SUPPORTED_EXTENSIONS = {
     ".xml",
     ".md",
     ".txt",
+    "",
 }
 
 
