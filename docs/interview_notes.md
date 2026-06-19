@@ -743,3 +743,441 @@ This step demonstrates:
 - early-return patterns
 - memory versus persistence awareness
 - modular retrieval-system architecture
+
+## Embeddings, Normalization, and FAISS
+
+### Simple Summary
+
+In this project, embeddings are used to convert code chunks and user questions into numerical vectors.
+
+A vector is just a list of numbers that represents the meaning of some text or code.
+
+For example:
+
+```text
+"verify JWT token"
+```
+
+can be converted into a vector like:
+
+```text
+[0.12, -0.45, 0.88, ...]
+```
+
+The exact numbers are not important to us directly. What matters is that similar meanings should produce similar vectors.
+
+For example:
+
+```text
+"verify JWT token"
+"decode authentication token"
+```
+
+should have similar vectors.
+
+But:
+
+```text
+"calculate shopping cart total"
+```
+
+should have a different vector.
+
+This helps our RAG system find relevant code even when the user question and the code do not use the exact same words.
+
+---
+
+### Why Do We Need Embeddings?
+
+Keyword search only works well when exact words match.
+
+Example:
+
+User asks:
+
+```text
+Where is login checked?
+```
+
+But the code may contain:
+
+```python
+def authenticate_user():
+    ...
+```
+
+The word `login` may not be present, but the meaning is related.
+
+Embeddings help the system understand semantic similarity.
+
+So instead of only matching exact words, the system can match meaning.
+
+---
+
+### What Happens in the Embedding Step?
+
+The pipeline becomes:
+
+```text
+CodeChunk
+    ↓
+Embedding model
+    ↓
+Vector
+```
+
+Each code chunk becomes one vector.
+
+The user question also becomes one vector.
+
+Then we compare the query vector with all chunk vectors.
+
+The closest vectors represent the most relevant code chunks.
+
+---
+
+### What Is Normalization?
+
+Vectors have two main properties:
+
+1. Direction
+2. Length
+
+In semantic search, direction is more important because it represents meaning.
+
+Normalization makes all vectors have the same length.
+
+This allows fair comparison between vectors.
+
+After normalization, we mainly compare vector direction instead of vector size.
+
+---
+
+### Why Normalize Embeddings?
+
+I normalize embeddings so that similarity comparison becomes more stable.
+
+With normalized vectors, inner product search behaves like cosine similarity.
+
+This is useful because FAISS can efficiently search using inner product.
+
+Simple explanation:
+
+```text
+Normalization = make all vectors the same length
+Cosine similarity = compare vector direction
+Direction = meaning
+```
+
+---
+
+### What Is Cosine Similarity?
+
+Cosine similarity measures how similar two vector directions are.
+
+If two vectors point in almost the same direction, their meaning is considered similar.
+
+Example:
+
+```text
+"verify JWT token"
+"decode authentication token"
+```
+
+These should have high cosine similarity.
+
+But:
+
+```text
+"verify JWT token"
+"calculate cart total"
+```
+
+These should have low cosine similarity.
+
+---
+
+### What Is FAISS?
+
+FAISS stands for Facebook AI Similarity Search.
+
+In this project, FAISS is used to quickly search through many embedding vectors and find the closest ones to a user query.
+
+If we have 50,000 code chunks, we do not want to manually compare the query with every chunk slowly.
+
+FAISS helps us find the top matching vectors efficiently.
+
+---
+
+### Is FAISS a Full Database?
+
+FAISS is not a full traditional database like PostgreSQL.
+
+FAISS mainly stores and searches vectors.
+
+It does not naturally store all rich metadata like:
+
+* file path
+* line number
+* code content
+* language
+* repository name
+
+So we need two things:
+
+```text
+1. FAISS index
+   Stores vectors
+
+2. Metadata store
+   Stores chunk details
+```
+
+Example:
+
+```text
+FAISS returns:
+ID = 42
+Score = 0.87
+```
+
+Then metadata tells us:
+
+```text
+ID 42 means:
+src/auth/login.py
+lines 20-60
+content: authentication code
+```
+
+---
+
+### Why Use the Same Embedding Model for Code Chunks and Queries?
+
+The code chunks and user questions must be converted into vectors in the same vector space.
+
+If different models are used, the vectors may not be comparable.
+
+So the same embedding model should be used for:
+
+* document chunks
+* user queries
+
+---
+
+### Why Use `all-MiniLM-L6-v2`?
+
+I used `all-MiniLM-L6-v2` as the initial embedding model because it is:
+
+* free
+* lightweight
+* fast
+* easy to run locally
+* good enough for a first baseline
+
+It may not be the best model for source code, but it is useful for building and understanding the full retrieval pipeline first.
+
+Later, I can compare it with code-specific embedding models.
+
+---
+
+### Why Wrap SentenceTransformer in Our Own Class?
+
+Instead of using `SentenceTransformer` directly everywhere, I created an `EmbeddingModel` wrapper.
+
+This is useful because:
+
+* model loading stays in one place
+* model replacement becomes easier
+* batching can be added later
+* caching can be added later
+* testing becomes easier
+* the rest of the project does not depend directly on one external library
+
+This is a good software engineering practice.
+
+---
+
+### Final Flow
+
+The embedding and retrieval flow is:
+
+```text
+Code chunks
+    ↓
+Create chunk embeddings
+    ↓
+Store embeddings in FAISS
+    ↓
+User asks a question
+    ↓
+Create query embedding
+    ↓
+Search nearest vectors in FAISS
+    ↓
+Get matching chunk IDs
+    ↓
+Use metadata to recover file path, line numbers, and code
+    ↓
+Send relevant context to LLM
+```
+
+---
+
+## Interview Questions and Answers
+
+### Q1. What are embeddings?
+
+Embeddings are dense numerical representations of text or code. They convert meaning into vectors so that similar texts are close to each other in vector space.
+
+---
+
+### Q2. Why do we need embeddings in this project?
+
+We need embeddings because user questions and source code may use different words for the same concept. Embeddings allow semantic search, so the system can find related code even without exact keyword matches.
+
+---
+
+### Q3. Why not only use keyword search?
+
+Keyword search is good for exact terms like `JWT`, `Stripe`, or `login.py`, but it can fail when the query and code use different vocabulary. Embeddings improve semantic matching.
+
+---
+
+### Q4. What is semantic search?
+
+Semantic search retrieves results based on meaning, not only exact word matching. It compares vector representations of the query and documents.
+
+---
+
+### Q5. What is a vector in this project?
+
+A vector is a list of numbers generated from a code chunk or user query. It represents the meaning of that text in numerical form.
+
+---
+
+### Q6. Why do similar texts have similar vectors?
+
+The embedding model is trained to place semantically related texts closer together in vector space.
+
+---
+
+### Q7. What is normalization?
+
+Normalization makes all vectors have the same length while keeping their direction the same.
+
+---
+
+### Q8. Why is vector direction important?
+
+In embedding search, vector direction represents semantic meaning. If two vectors point in similar directions, their meanings are likely similar.
+
+---
+
+### Q9. Why normalize embeddings?
+
+I normalize embeddings so that similarity comparison focuses on direction rather than vector size. With normalized vectors, inner product search can behave like cosine similarity.
+
+---
+
+### Q10. What is cosine similarity?
+
+Cosine similarity measures how close two vectors are in direction. It is commonly used to compare embeddings.
+
+---
+
+### Q11. What is dot product?
+
+Dot product is a mathematical operation used to compare two vectors. For normalized vectors, dot product can be used like cosine similarity.
+
+---
+
+### Q12. Why use FAISS?
+
+FAISS helps search through many vectors quickly. It is useful when we have thousands of code chunks and need to find the most relevant chunks for a user query.
+
+---
+
+### Q13. Is FAISS a vector database?
+
+FAISS is better described as a vector similarity search library or vector index. It searches vectors efficiently, but we still need a separate metadata store for file paths, line numbers, and chunk content.
+
+---
+
+### Q14. What does FAISS return?
+
+FAISS returns the IDs of the closest vectors and their similarity scores. We then use metadata mapping to find the original code chunk.
+
+---
+
+### Q15. Why do we need metadata with FAISS?
+
+FAISS only knows about vectors and IDs. Metadata is needed to map each vector ID back to the original source file, line numbers, language, and chunk content.
+
+---
+
+### Q16. Why use the same model for chunks and queries?
+
+Both chunk vectors and query vectors must exist in the same vector space. If different models are used, similarity comparison may not be meaningful.
+
+---
+
+### Q17. Why did you choose `all-MiniLM-L6-v2`?
+
+I chose it as a lightweight and free baseline model. It is fast, easy to run locally, and good for building the first working retrieval pipeline.
+
+---
+
+### Q18. Is `all-MiniLM-L6-v2` the best model for code?
+
+Not necessarily. It is a good starting baseline, but later I can compare it with code-specific embedding models using retrieval evaluation metrics.
+
+---
+
+### Q19. Why wrap SentenceTransformer in an `EmbeddingModel` class?
+
+I wrapped it to create a clean abstraction. This makes it easier to replace the model, add caching, add batching, and test the code without depending directly on the external library everywhere.
+
+---
+
+### Q20. What is the role of embeddings in the full RAG pipeline?
+
+Embeddings convert code chunks and questions into vectors. These vectors allow the retriever to find the most relevant chunks, which are then passed to the LLM for answer generation.
+
+---
+
+### Q21. Why not send the whole repository directly to the LLM?
+
+Repositories can be very large, and LLM context windows are limited. Sending the whole repository would be slow, costly, and noisy. RAG retrieves only the most relevant chunks before generating an answer.
+
+---
+
+### Q22. What is the difference between embedding storage and metadata storage?
+
+Embedding storage stores numerical vectors for similarity search. Metadata storage stores information about each vector, such as file path, line numbers, language, and chunk content.
+
+---
+
+### Q23. What is the complete retrieval flow after embeddings are created?
+
+The user question is embedded into a query vector. FAISS compares it with stored chunk vectors and returns the closest vector IDs. The system then uses metadata to recover the original chunks and sends them to the LLM as context.
+
+---
+
+### Q24. What is one limitation of this embedding approach?
+
+A general-purpose embedding model may not fully understand programming-language structure. Later improvements can include code-specific embedding models, hybrid search, reranking, and AST-based chunking.
+
+---
+
+### Q25. How would you improve this embedding layer later?
+
+I would improve it by:
+
+* testing code-specific embedding models
+* adding batch processing
+* caching embeddings
+* evaluating retrieval quality
+* combining semantic search with keyword search
+* adding reranking
+* preserving richer metadata
