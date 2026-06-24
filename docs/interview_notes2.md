@@ -747,3 +747,52 @@ Later improvements can include:
 * incremental indexing
 * repository-wise index separation
 
+## Step 12: Metadata Store
+
+### What did I build?
+
+I created a metadata store that saves and loads chunk metadata using JSON files.
+
+Each FAISS vector needs matching metadata so the system can map vector search results back to original source code.
+
+---
+
+### Why is metadata needed?
+
+FAISS stores and searches numerical vectors.
+
+It does not know:
+
+- source file path
+- line numbers
+- programming language
+- original chunk content
+
+So metadata is stored separately.
+
+---
+
+### What does metadata contain?
+
+Each metadata item contains information such as:
+
+- chunk content
+- file path
+- file name
+- language
+- start line
+- end line
+- chunk index
+
+Example:
+
+```json
+{
+  "content": "def authenticate_user(...): ...",
+  "file_path": "src/auth.py",
+  "file_name": "auth.py",
+  "language": "python",
+  "start_line": 10,
+  "end_line": 40,
+  "chunk_index": 0
+}
