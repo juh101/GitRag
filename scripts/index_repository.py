@@ -1,15 +1,22 @@
 import argparse
+from pathlib import Path
 
 from chunking.code_chunker import chunk_documents
+from embeddings.embed_chunks import embed_chunks
+from embeddings.embedding_model import EmbeddingModel
 from ingest.clone_repo import clone_repository
 from ingest.parse_repo import parse_repository
+from vector_store.faiss_store import FaissVectorStore
+from vector_store.metadata_store import save_metadata
 
 
 def ingest_repository(repo_url: str):
     """
     Clone a Git repository, parse supported files,
-    and split them into retrievable code chunks.
+    chunk them, generate embeddings,
+    and build a FAISS index.
     """
+
     print("Cloning or locating repository...")
 
     repository_path = clone_repository(repo_url)
@@ -30,12 +37,50 @@ def ingest_repository(repo_url: str):
 
     print(f"Total chunks created: {len(chunks)}")
 
+    print("Loading embedding model...")
+
+    embedding_model = EmbeddingModel()
+
+    print("Generating embeddings...")
+
+    embeddings, metadata = embed_chunks(
+        chunks,
+        embedding_model,
+    )
+
+    print(f"Generated {len(embeddings)} embeddings.")
+    
+    print("Building FAISS index...")
+
+    vector_store = FaissVectorStore(embeddings.shape[1])
+    vector_store.add_embeddings(embeddings)
+
+    owner = repository_path.parent.name
+    repository = repository_path.name
+
+    save_directory = (
+        Path("vector_store")
+        / owner
+        / repository
+    )
+
+    save_directory.mkdir(parents=True, exist_ok=True)
+
+    index_path = save_directory / "index.faiss"
+    metadata_path = save_directory / "metadata.json"
+
+    vector_store.save(index_path)
+    save_metadata(metadata, metadata_path)
+
+    print(f"FAISS index saved to: {index_path}")
+    print(f"Metadata saved to: {metadata_path}")
+
     return documents, chunks
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Clone, parse, and chunk a GitHub repository."
+        description="Clone, parse, chunk and index a GitHub repository."
     )
 
     parser.add_argument(

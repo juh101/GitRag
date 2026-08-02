@@ -10,14 +10,24 @@ DEFAULT_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 class EmbeddingModel:
     """
     Wrapper around SentenceTransformer for generating text embeddings.
+
+    The transformer model is loaded only once and shared by all
+    EmbeddingModel instances.
     """
+
+    _shared_model = None
 
     def __init__(
         self,
         model_name: str = DEFAULT_EMBEDDING_MODEL,
     ) -> None:
         self.model_name = model_name
-        self.model = SentenceTransformer(model_name)
+
+        if EmbeddingModel._shared_model is None:
+            print("Loading embedding model...")
+            EmbeddingModel._shared_model = SentenceTransformer(model_name)
+
+        self.model = EmbeddingModel._shared_model
 
     def embed_texts(
         self,
@@ -38,7 +48,10 @@ class EmbeddingModel:
 
         return embeddings.astype(np.float32)
 
-    def embed_query(self, query: str) -> np.ndarray:
+    def embed_query(
+        self,
+        query: str,
+    ) -> np.ndarray:
         """
         Convert one user query into a normalized embedding vector.
         """

@@ -796,3 +796,13 @@ Example:
   "end_line": 40,
   "chunk_index": 0
 }
+
+Interview Answer
+
+If an interviewer asks:
+
+"Why did you cache the embedding model but not the FAISS index?"
+
+A good answer is:
+
+"The embedding model is the most expensive component to initialize because it loads neural network weights into memory and takes around a couple of seconds. The FAISS index and metadata are comparatively lightweight to load. I optimized the largest bottleneck first. If the application needed to serve many repositories or high query throughput, I would extend the same caching strategy to FAISS indices as well."

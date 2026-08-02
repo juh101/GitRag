@@ -1,10 +1,8 @@
 from typing import Any
-
 import numpy as np
 
 from chunking.models import CodeChunk
 from embeddings.embedding_model import EmbeddingModel
-
 
 def create_chunk_metadata(chunk: CodeChunk) -> dict[str, Any]:
     """

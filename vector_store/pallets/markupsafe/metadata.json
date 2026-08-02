@@ -1,0 +1,515 @@
+[
+  {
+    "content": "root = true\n\n[*]\nindent_style = space\nindent_size = 4\ninsert_final_newline = true\ntrim_trailing_whitespace = true\nend_of_line = lf\ncharset = utf-8\nmax_line_length = 88\n\n[*.{css,html,js,json,jsx,scss,ts,tsx,yaml,yml}]\nindent_size = 2",
+    "file_path": ".editorconfig",
+    "file_name": ".editorconfig",
+    "language": "unknown",
+    "start_line": 1,
+    "end_line": 13,
+    "chunk_index": 0
+  },
+  {
+    "content": ".idea/\n.vscode/\n__pycache__/\n*.egg-info/\n*.so\nbuild/\ndist/\n.coverage*\nhtmlcov/\n.tox/\ndocs/_build/",
+    "file_path": ".gitignore",
+    "file_name": ".gitignore",
+    "language": "unknown",
+    "start_line": 1,
+    "end_line": 11,
+    "chunk_index": 0
+  },
+  {
+    "content": "repos:\n  - repo: https://github.com/astral-sh/ruff-pre-commit\n    rev: f298305809c552671cc47e0fec0ba43e96c146a2  # frozen: v0.13.2\n    hooks:\n      - id: ruff\n      - id: ruff-format\n  - repo: https://github.com/astral-sh/uv-pre-commit\n    rev: 9e8320f8d22dfa502984f75bb72d6bba825e570c  # frozen: 0.8.22\n    hooks:\n      - id: uv-lock\n  - repo: https://github.com/pre-commit/pre-commit-hooks\n    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0\n    hooks:\n      - id: check-merge-conflict\n      - id: debug-statements\n      - id: fix-byte-order-marker\n      - id: trailing-whitespace\n      - id: end-of-file-fixer",
+    "file_path": ".pre-commit-config.yaml",
+    "file_name": ".pre-commit-config.yaml",
+    "language": "yaml",
+    "start_line": 1,
+    "end_line": 18,
+    "chunk_index": 0
+  },
+  {
+    "content": "version: 2\nbuild:\n  os: ubuntu-24.04\n  tools:\n    python: '3.13'\n  commands:\n    - asdf plugin add uv\n    - asdf install uv latest\n    - asdf global uv latest\n    - uv run --group docs sphinx-build -W -b dirhtml docs $READTHEDOCS_OUTPUT/html",
+    "file_path": ".readthedocs.yaml",
+    "file_name": ".readthedocs.yaml",
+    "language": "yaml",
+    "start_line": 1,
+    "end_line": 10,
+    "chunk_index": 0
+  },
+  {
+    "content": "import subprocess\nimport sys\n\nfor name, s in (\n    (\"short escape\", '\"<strong>Hello, World!</strong>\"'),\n    (\"long escape\", '\"Hello, World!\" * 1000'),\n    (\"short plain\", '\"Hello, World!\"'),\n    (\"long plain\", '\"Hello, World!\" * 1000'),\n    (\"long suffix\", '\"<strong>Hello, World!</strong>\" + \"x\" * 100_000'),\n):\n    for mod in \"native\", \"speedups\":\n        subprocess.run(\n            [\n                sys.executable,\n                \"-m\",\n                \"pyperf\",\n                \"timeit\",\n                \"--name\",\n                f\"{name} {mod}\",\n                \"-s\",\n                (\n                    \"import markupsafe\\n\"\n                    f\"from markupsafe._{mod} import _escape_inner\\n\"\n                    \"markupsafe._escape_inner = _escape_inner\\n\"\n                    \"from markupsafe import escape\\n\"\n                    f\"s = {s}\"\n                ),\n                \"escape(s)\",\n            ]\n        )",
+    "file_path": "bench.py",
+    "file_name": "bench.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 30,
+    "chunk_index": 0
+  },
+  {
+    "content": "Copyright 2010 Pallets\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are\nmet:\n\n1.  Redistributions of source code must retain the above copyright\n    notice, this list of conditions and the following disclaimer.\n\n2.  Redistributions in binary form must reproduce the above copyright\n    notice, this list of conditions and the following disclaimer in the\n    documentation and/or other materials provided with the distribution.\n\n3.  Neither the name of the copyright holder nor the names of its\n    contributors may be used to endorse or promote products derived from\n    this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\nLIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A\nPARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\nHOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\nSPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED\nTO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\nPROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\nLIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\nNEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\nSOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+    "file_path": "LICENSE.txt",
+    "file_name": "LICENSE.txt",
+    "language": "text",
+    "start_line": 1,
+    "end_line": 28,
+    "chunk_index": 0
+  },
+  {
+    "content": "[project]\nname = \"MarkupSafe\"\nversion = \"3.1.0.dev\"\ndescription = \"Safely add untrusted strings to HTML/XML markup.\"\nreadme = \"README.md\"\nlicense = \"BSD-3-Clause\"\nlicense-files = [\"LICENSE.txt\"]\nmaintainers = [{name = \"Pallets\", email = \"contact@palletsprojects.com\"}]\nclassifiers = [\n    \"Development Status :: 5 - Production/Stable\",\n    \"Environment :: Web Environment\",\n    \"Intended Audience :: Developers\",\n    \"Operating System :: OS Independent\",\n    \"Programming Language :: Python\",\n    \"Topic :: Internet :: WWW/HTTP :: Dynamic Content\",\n    \"Topic :: Text Processing :: Markup :: HTML\",\n    \"Typing :: Typed\",\n]\nrequires-python = \">=3.10\"\n\n[project.urls]\nDonate = \"https://palletsprojects.com/donate\"\nDocumentation = \"https://markupsafe.palletsprojects.com/\"\nChanges = \"https://markupsafe.palletsprojects.com/page/changes/\"\nSource = \"https://github.com/pallets/markupsafe/\"\nChat = \"https://discord.gg/pallets\"\n\n[dependency-groups]\ndev = [\n    \"ruff\",\n    \"tox\",\n    \"tox-uv\",\n]\ndocs = [\n    \"pallets-sphinx-themes\",\n    \"sphinx\",\n    \"sphinxcontrib-log-cabinet\",\n]\ndocs-auto = [\n    \"sphinx-autobuild\",",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": "    \"tox\",\n    \"tox-uv\",\n]\ndocs = [\n    \"pallets-sphinx-themes\",\n    \"sphinx\",\n    \"sphinxcontrib-log-cabinet\",\n]\ndocs-auto = [\n    \"sphinx-autobuild\",\n]\ngha-update = [\n    \"gha-update ; python_full_version >= '3.12'\",\n]\npre-commit = [\n    \"pre-commit\",\n    \"pre-commit-uv\",\n]\ntests = [\n    \"pytest\",\n    \"pytest-run-parallel; python_full_version >= '3.13'\",\n]\ntyping = [\n    \"mypy\",\n    \"pyright\",\n    \"pytest\",\n]\n\n[build-system]\nrequires = [\"setuptools>=77\"]\nbuild-backend = \"setuptools.build_meta\"\n\n[tool.uv]\ndefault-groups = [\"dev\", \"pre-commit\", \"tests\", \"typing\"]\n\n[tool.pytest.ini_options]\ntestpaths = [\"tests\"]\nfilterwarnings = [\n    \"error\",\n]",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 31,
+    "end_line": 70,
+    "chunk_index": 1
+  },
+  {
+    "content": "build-backend = \"setuptools.build_meta\"\n\n[tool.uv]\ndefault-groups = [\"dev\", \"pre-commit\", \"tests\", \"typing\"]\n\n[tool.pytest.ini_options]\ntestpaths = [\"tests\"]\nfilterwarnings = [\n    \"error\",\n]\nmarkers = [\n    # Needed when pytest-run-parallel is not installed\n    \"thread_unsafe: mark test as not safe to run in multiple threads\",\n]\n[tool.coverage.run]\nbranch = true\nsource = [\"markupsafe\", \"tests\"]\n\n[tool.coverage.paths]\nsource = [\"src\", \"*/site-packages\"]\n\n[tool.coverage.report]\nexclude_also = [\n    \"if t.TYPE_CHECKING\",\n    \"raise NotImplementedError\",\n    \": \\\\.{3}\",\n]\n\n[tool.mypy]\npython_version = \"3.10\"\nfiles = [\"src\", \"tests\"]\nshow_error_codes = true\npretty = true\nstrict = true\n\n[tool.pyright]\npythonVersion = \"3.10\"\ninclude = [\"src\", \"tests\"]\ntypeCheckingMode = \"standard\"\n",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 61,
+    "end_line": 100,
+    "chunk_index": 2
+  },
+  {
+    "content": "files = [\"src\", \"tests\"]\nshow_error_codes = true\npretty = true\nstrict = true\n\n[tool.pyright]\npythonVersion = \"3.10\"\ninclude = [\"src\", \"tests\"]\ntypeCheckingMode = \"standard\"\n\n[tool.ruff]\nsrc = [\"src\"]\nfix = true\nshow-fixes = true\noutput-format = \"full\"\n\n[tool.ruff.lint]\nselect = [\n    \"B\",  # flake8-bugbear\n    \"E\",  # pycodestyle error\n    \"F\",  # pyflakes\n    \"I\",  # isort\n    \"UP\",  # pyupgrade\n    \"W\",  # pycodestyle warning\n]\nignore = [\n    \"UP038\",  # keep isinstance tuple\n]\n\n[tool.ruff.lint.isort]\nforce-single-line = true\norder-by-type = false\n\n[tool.gha-update]\ntag-only = [\n    \"slsa-framework/slsa-github-generator\",\n]\n\n[tool.tox]\nenv_list = [",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 91,
+    "end_line": 130,
+    "chunk_index": 3
+  },
+  {
+    "content": "force-single-line = true\norder-by-type = false\n\n[tool.gha-update]\ntag-only = [\n    \"slsa-framework/slsa-github-generator\",\n]\n\n[tool.tox]\nenv_list = [\n    \"py3.14\", \"py3.14t\", \"parallel\",\n    \"py3.13\", \"py3.13t\", \"py3.12\", \"py3.11\", \"py3.10\",\n    \"pypy3.11\",\n    \"style\",\n    \"typing\",\n    \"docs\",\n]\n\n[tool.tox.env_run_base]\ndescription = \"pytest on latest dependency versions\"\nrunner = \"uv-venv-lock-runner\"\npackage = \"wheel\"\nwheel_build_env = \".pkg\"\nconstrain_package_deps = true\nuse_frozen_constraints = true\ndependency_groups = [\"tests\"]\ncommands = [[\n    \"pytest\", \"-v\", \"--tb=short\", \"--basetemp={env_tmp_dir}\",\n    {replace = \"posargs\", default = [], extend = true},\n]]\n\n[tool.tox.env.parallel]\ndescription = \"check for free threading issues\"\nbase_python = [\"3.14t\"]\ncommands = [[\n    \"pytest\", \"-v\", \"--tb=short\", \"--basetemp=env_tmp_dir\",\n    \"--parallel-threads=8\",\n    {replace = \"posargs\", default = [], extend = true},\n]]\n",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 121,
+    "end_line": 160,
+    "chunk_index": 4
+  },
+  {
+    "content": "\n[tool.tox.env.parallel]\ndescription = \"check for free threading issues\"\nbase_python = [\"3.14t\"]\ncommands = [[\n    \"pytest\", \"-v\", \"--tb=short\", \"--basetemp=env_tmp_dir\",\n    \"--parallel-threads=8\",\n    {replace = \"posargs\", default = [], extend = true},\n]]\n\n[tool.tox.env.style]\ndescription = \"run all pre-commit hooks on all files\"\ndependency_groups = [\"pre-commit\"]\nskip_install = true\ncommands = [[\"pre-commit\", \"run\", \"--all-files\"]]\n\n[tool.tox.env.typing]\ndescription = \"run static type checkers\"\ndependency_groups = [\"typing\"]\ncommands = [\n    [\"mypy\"],\n]\n\n[tool.tox.env.docs]\ndescription = \"build docs\"\ndependency_groups = [\"docs\"]\ncommands = [[\"sphinx-build\", \"-E\", \"-W\", \"-b\", \"dirhtml\", \"docs\", \"docs/_build/dirhtml\"]]\n\n[tool.tox.env.docs-auto]\ndescription = \"continuously rebuild docs and start a local server\"\ndependency_groups = [\"docs\", \"docs-auto\"]\ncommands = [[\"sphinx-autobuild\", \"-W\", \"-b\", \"dirhtml\", \"--watch\", \"src\", \"docs\", \"docs/_build/dirhtml\"]]\n\n[tool.tox.env.update-actions]\ndescription = \"update GitHub Actions pins\"\nlabels = [\"update\"]\ndependency_groups = [\"gha-update\"]\nskip_install = true\ncommands = [[\"gha-update\"]]\n",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 151,
+    "end_line": 190,
+    "chunk_index": 5
+  },
+  {
+    "content": "dependency_groups = [\"docs\", \"docs-auto\"]\ncommands = [[\"sphinx-autobuild\", \"-W\", \"-b\", \"dirhtml\", \"--watch\", \"src\", \"docs\", \"docs/_build/dirhtml\"]]\n\n[tool.tox.env.update-actions]\ndescription = \"update GitHub Actions pins\"\nlabels = [\"update\"]\ndependency_groups = [\"gha-update\"]\nskip_install = true\ncommands = [[\"gha-update\"]]\n\n[tool.tox.env.update-pre_commit]\ndescription = \"update pre-commit pins\"\nlabels = [\"update\"]\ndependency_groups = [\"pre-commit\"]\nskip_install = true\ncommands = [[\"pre-commit\", \"autoupdate\", \"--freeze\", \"-j4\"]]\n\n[tool.tox.env.update-requirements]\ndescription = \"update uv lock\"\nlabels = [\"update\"]\ndependency_groups = []\nno_default_groups = true\nskip_install = true\ncommands = [[\"uv\", \"lock\", {replace = \"posargs\", default = [\"-U\"], extend = true}]]\n\n[tool.cibuildwheel]\nenable = \"cpython-freethreading\"\nbuild-frontend = \"build[uv]\"\n\n[[tool.cibuildwheel.overrides]]\nselect = \"*-musllinux_riscv64\"\n# uv is not available\nbuild-frontend = \"build\"\n\n[tool.cibuildwheel.linux]\narchs = [\"x86_64\", \"aarch64\", \"riscv64\"]\n\n[tool.cibuildwheel.macos]\narchs = [\"x86_64\", \"arm64\"]\n",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 181,
+    "end_line": 220,
+    "chunk_index": 6
+  },
+  {
+    "content": "select = \"*-musllinux_riscv64\"\n# uv is not available\nbuild-frontend = \"build\"\n\n[tool.cibuildwheel.linux]\narchs = [\"x86_64\", \"aarch64\", \"riscv64\"]\n\n[tool.cibuildwheel.macos]\narchs = [\"x86_64\", \"arm64\"]\n\n[tool.cibuildwheel.windows]\narchs = [\"auto\", \"ARM64\"]",
+    "file_path": "pyproject.toml",
+    "file_name": "pyproject.toml",
+    "language": "toml",
+    "start_line": 211,
+    "end_line": 222,
+    "chunk_index": 7
+  },
+  {
+    "content": "<div align=\"center\"><img src=\"https://raw.githubusercontent.com/pallets/markupsafe/refs/heads/stable/docs/_static/markupsafe-name.svg\" alt=\"\" height=\"150\"></div>\n\n# MarkupSafe\n\nMarkupSafe implements a text object that escapes characters so it is\nsafe to use in HTML and XML. Characters that have special meanings are\nreplaced so that they display as the actual characters. This mitigates\ninjection attacks, meaning untrusted user input can safely be displayed\non a page.\n\n\n## Examples\n\n```pycon\n>>> from markupsafe import Markup, escape\n\n>>> # escape replaces special characters and wraps in Markup\n>>> escape(\"<script>alert(document.cookie);</script>\")\nMarkup('&lt;script&gt;alert(document.cookie);&lt;/script&gt;')\n\n>>> # wrap in Markup to mark text \"safe\" and prevent escaping\n>>> Markup(\"<strong>Hello</strong>\")\nMarkup('<strong>hello</strong>')\n\n>>> escape(Markup(\"<strong>Hello</strong>\"))\nMarkup('<strong>hello</strong>')\n\n>>> # Markup is a str subclass\n>>> # methods and operators escape their arguments\n>>> template = Markup(\"Hello <em>{name}</em>\")\n>>> template.format(name='\"World\"')\nMarkup('Hello <em>&#34;World&#34;</em>')\n```\n\n## Donate\n\nThe Pallets organization develops and supports MarkupSafe and other\npopular packages. In order to grow the community of contributors and\nusers, and allow the maintainers to devote more time to the projects,\n[please donate today][].",
+    "file_path": "README.md",
+    "file_name": "README.md",
+    "language": "markdown",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": ">>> template.format(name='\"World\"')\nMarkup('Hello <em>&#34;World&#34;</em>')\n```\n\n## Donate\n\nThe Pallets organization develops and supports MarkupSafe and other\npopular packages. In order to grow the community of contributors and\nusers, and allow the maintainers to devote more time to the projects,\n[please donate today][].\n\n[please donate today]: https://palletsprojects.com/donate\n\n## Contributing\n\nSee our [detailed contributing documentation][contrib] for many ways to\ncontribute, including reporting issues, requesting features, asking or answering\nquestions, and making PRs.\n\n[contrib]: https://palletsprojects.com/contributing/",
+    "file_path": "README.md",
+    "file_name": "README.md",
+    "language": "markdown",
+    "start_line": 31,
+    "end_line": 50,
+    "chunk_index": 1
+  },
+  {
+    "content": "import os\nimport platform\nimport sys\n\nfrom setuptools import Extension\nfrom setuptools import setup\nfrom setuptools.command.build_ext import build_ext\nfrom setuptools.errors import CCompilerError\nfrom setuptools.errors import ExecError\nfrom setuptools.errors import PlatformError\n\next_modules = [Extension(\"markupsafe._speedups\", [\"src/markupsafe/_speedups.c\"])]\n\n\nclass BuildFailed(Exception):\n    pass\n\n\nclass ve_build_ext(build_ext):\n    \"\"\"This class allows C extension building to fail.\"\"\"\n\n    def run(self):\n        try:\n            super().run()\n        except PlatformError as e:\n            raise BuildFailed() from e\n\n    def build_extension(self, ext):\n        try:\n            super().build_extension(ext)\n        except (CCompilerError, ExecError, PlatformError) as e:\n            raise BuildFailed() from e\n        except ValueError as e:\n            # this can happen on Windows 64 bit, see Python issue 7511\n            if \"'path'\" in str(sys.exc_info()[1]):  # works with Python 2 and 3\n                raise BuildFailed() from e\n            raise\n\n\ndef run_setup(with_binary):",
+    "file_path": "setup.py",
+    "file_name": "setup.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": "        except (CCompilerError, ExecError, PlatformError) as e:\n            raise BuildFailed() from e\n        except ValueError as e:\n            # this can happen on Windows 64 bit, see Python issue 7511\n            if \"'path'\" in str(sys.exc_info()[1]):  # works with Python 2 and 3\n                raise BuildFailed() from e\n            raise\n\n\ndef run_setup(with_binary):\n    setup(\n        cmdclass={\"build_ext\": ve_build_ext},\n        ext_modules=ext_modules if with_binary else [],\n    )\n\n\ndef show_message(*lines):\n    print(\"=\" * 74)\n    for line in lines:\n        print(line)\n    print(\"=\" * 74)\n\n\nsupports_speedups = platform.python_implementation() not in {\n    \"PyPy\",\n    \"Jython\",\n    \"GraalVM\",\n}\n\nif os.environ.get(\"CIBUILDWHEEL\", \"0\") == \"1\" and supports_speedups:\n    run_setup(True)\nelif supports_speedups:\n    try:\n        run_setup(True)\n    except BuildFailed:\n        show_message(\n            \"WARNING: The C extension could not be compiled, speedups are not enabled.\",\n            \"Failure information, if any, is above.\",\n            \"Retrying the build without the C extension now.\",\n        )",
+    "file_path": "setup.py",
+    "file_name": "setup.py",
+    "language": "python",
+    "start_line": 31,
+    "end_line": 70,
+    "chunk_index": 1
+  },
+  {
+    "content": "    run_setup(True)\nelif supports_speedups:\n    try:\n        run_setup(True)\n    except BuildFailed:\n        show_message(\n            \"WARNING: The C extension could not be compiled, speedups are not enabled.\",\n            \"Failure information, if any, is above.\",\n            \"Retrying the build without the C extension now.\",\n        )\n        run_setup(False)\n        show_message(\n            \"WARNING: The C extension could not be compiled, speedups are not enabled.\",\n            \"Plain-Python build succeeded.\",\n        )\nelse:\n    run_setup(False)\n    show_message(\n        \"WARNING: C extensions are not supported on this Python\"\n        \" platform, speedups are not enabled.\",\n        \"Plain-Python build succeeded.\",\n    )",
+    "file_path": "setup.py",
+    "file_name": "setup.py",
+    "language": "python",
+    "start_line": 61,
+    "end_line": 82,
+    "chunk_index": 2
+  },
+  {
+    "content": "{\n  \"name\": \"pallets/markupsafe\",\n  \"image\": \"mcr.microsoft.com/devcontainers/python:3\",\n  \"customizations\": {\n    \"vscode\": {\n      \"settings\": {\n        \"python.defaultInterpreterPath\": \"${workspaceFolder}/.venv\",\n        \"python.terminal.activateEnvInCurrentTerminal\": true,\n        \"python.terminal.launchArgs\": [\n          \"-X\",\n          \"dev\"\n        ]\n      }\n    }\n  },\n  \"onCreateCommand\": \".devcontainer/on-create-command.sh\"\n}",
+    "file_path": ".devcontainer/devcontainer.json",
+    "file_name": "devcontainer.json",
+    "language": "json",
+    "start_line": 1,
+    "end_line": 17,
+    "chunk_index": 0
+  },
+  {
+    "content": "from pallets_sphinx_themes import get_version\nfrom pallets_sphinx_themes import ProjectLink\n\n# Project --------------------------------------------------------------\n\nproject = \"MarkupSafe\"\ncopyright = \"2010 Pallets\"\nauthor = \"Pallets\"\nrelease, version = get_version(\"MarkupSafe\")\n\n# General --------------------------------------------------------------\n\ndefault_role = \"code\"\nextensions = [\n    \"sphinx.ext.autodoc\",\n    \"sphinx.ext.extlinks\",\n    \"sphinx.ext.intersphinx\",\n    \"sphinxcontrib.log_cabinet\",\n    \"pallets_sphinx_themes\",\n]\nautodoc_member_order = \"bysource\"\nautodoc_typehints = \"description\"\nautodoc_preserve_defaults = True\nextlinks = {\n    \"issue\": (\"https://github.com/pallets/markupsafe/issues/%s\", \"#%s\"),\n    \"pr\": (\"https://github.com/pallets/markupsafe/pull/%s\", \"#%s\"),\n}\nintersphinx_mapping = {\n    \"python\": (\"https://docs.python.org/3/\", None),\n}\n\n# HTML -----------------------------------------------------------------\n\nhtml_theme = \"jinja\"\nhtml_theme_options = {\"index_sidebar_logo\": False}\nhtml_context = {\n    \"project_links\": [\n        ProjectLink(\"Donate\", \"https://palletsprojects.com/donate\"),\n        ProjectLink(\"PyPI Releases\", \"https://pypi.org/project/MarkupSafe/\"),\n        ProjectLink(\"Source Code\", \"https://github.com/pallets/markupsafe/\"),",
+    "file_path": "docs/conf.py",
+    "file_name": "conf.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": "\n# HTML -----------------------------------------------------------------\n\nhtml_theme = \"jinja\"\nhtml_theme_options = {\"index_sidebar_logo\": False}\nhtml_context = {\n    \"project_links\": [\n        ProjectLink(\"Donate\", \"https://palletsprojects.com/donate\"),\n        ProjectLink(\"PyPI Releases\", \"https://pypi.org/project/MarkupSafe/\"),\n        ProjectLink(\"Source Code\", \"https://github.com/pallets/markupsafe/\"),\n        ProjectLink(\"Issue Tracker\", \"https://github.com/pallets/markupsafe/issues/\"),\n        ProjectLink(\"Chat\", \"https://discord.gg/pallets\"),\n    ]\n}\nhtml_sidebars = {\n    \"index\": [\"project.html\", \"localtoc.html\", \"searchbox.html\", \"ethicalads.html\"],\n    \"**\": [\"localtoc.html\", \"relations.html\", \"searchbox.html\", \"ethicalads.html\"],\n}\nsinglehtml_sidebars = {\"index\": [\"project.html\", \"localtoc.html\", \"ethicalads.html\"]}\nhtml_static_path = [\"_static\"]\nhtml_favicon = \"_static/markupsafe-icon.svg\"\nhtml_logo = \"_static/markupsafe-logo.svg\"\nhtml_title = f\"MarkupSafe Documentation ({version})\"\nhtml_show_sourcelink = False",
+    "file_path": "docs/conf.py",
+    "file_name": "conf.py",
+    "language": "python",
+    "start_line": 31,
+    "end_line": 54,
+    "chunk_index": 1
+  },
+  {
+    "content": "# Minimal makefile for Sphinx documentation\n#\n\n# You can set these variables from the command line.\nSPHINXOPTS    =\nSPHINXBUILD   = sphinx-build\nSOURCEDIR     = .\nBUILDDIR      = _build\n\n# Put it first so that \"make\" without argument is like \"make help\".\nhelp:\n\t@$(SPHINXBUILD) -M help \"$(SOURCEDIR)\" \"$(BUILDDIR)\" $(SPHINXOPTS) $(O)\n\n.PHONY: help Makefile\n\n# Catch-all target: route all unknown targets to Sphinx using the new\n# \"make mode\" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).\n%: Makefile\n\t@$(SPHINXBUILD) -M $@ \"$(SOURCEDIR)\" \"$(BUILDDIR)\" $(SPHINXOPTS) $(O)",
+    "file_path": "docs/Makefile",
+    "file_name": "Makefile",
+    "language": "unknown",
+    "start_line": 1,
+    "end_line": 19,
+    "chunk_index": 0
+  },
+  {
+    "content": "def _escape_inner(s: str, /) -> str:\n    return (\n        s.replace(\"&\", \"&amp;\")\n        .replace(\">\", \"&gt;\")\n        .replace(\"<\", \"&lt;\")\n        .replace(\"'\", \"&#39;\")\n        .replace('\"', \"&#34;\")\n    )",
+    "file_path": "src/markupsafe/_native.py",
+    "file_name": "_native.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 8,
+    "chunk_index": 0
+  },
+  {
+    "content": "#include <Python.h>\n\n#define GET_DELTA(inp, inp_end, delta) \\\n\twhile (inp < inp_end) { \\\n\t\tswitch (*inp++) { \\\n\t\tcase '\"': \\\n\t\tcase '\\'': \\\n\t\tcase '&': \\\n\t\t\tdelta += 4; \\\n\t\t\tbreak; \\\n\t\tcase '<': \\\n\t\tcase '>': \\\n\t\t\tdelta += 3; \\\n\t\t\tbreak; \\\n\t\t} \\\n\t}\n\n#define DO_ESCAPE(inp, inp_end, outp) \\\n\t{ \\\n\t\tPy_ssize_t ncopy = 0; \\\n\t\twhile (inp < inp_end) { \\\n\t\t\tswitch (*inp) { \\\n\t\t\tcase '\"': \\\n\t\t\t\tmemcpy(outp, inp-ncopy, sizeof(*outp)*ncopy); \\\n\t\t\t\toutp += ncopy; ncopy = 0; \\\n\t\t\t\t*outp++ = '&'; \\\n\t\t\t\t*outp++ = '#'; \\\n\t\t\t\t*outp++ = '3'; \\\n\t\t\t\t*outp++ = '4'; \\\n\t\t\t\t*outp++ = ';'; \\\n\t\t\t\tbreak; \\\n\t\t\tcase '\\'': \\\n\t\t\t\tmemcpy(outp, inp-ncopy, sizeof(*outp)*ncopy); \\\n\t\t\t\toutp += ncopy; ncopy = 0; \\\n\t\t\t\t*outp++ = '&'; \\\n\t\t\t\t*outp++ = '#'; \\\n\t\t\t\t*outp++ = '3'; \\\n\t\t\t\t*outp++ = '9'; \\\n\t\t\t\t*outp++ = ';'; \\\n\t\t\t\tbreak; \\",
+    "file_path": "src/markupsafe/_speedups.c",
+    "file_name": "_speedups.c",
+    "language": "c",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": "\t\t\t\tbreak; \\\n\t\t\tcase '\\'': \\\n\t\t\t\tmemcpy(outp, inp-ncopy, sizeof(*outp)*ncopy); \\\n\t\t\t\toutp += ncopy; ncopy = 0; \\\n\t\t\t\t*outp++ = '&'; \\\n\t\t\t\t*outp++ = '#'; \\\n\t\t\t\t*outp++ = '3'; \\\n\t\t\t\t*outp++ = '9'; \\\n\t\t\t\t*outp++ = ';'; \\\n\t\t\t\tbreak; \\\n\t\t\tcase '&': \\\n\t\t\t\tmemcpy(outp, inp-ncopy, sizeof(*outp)*ncopy); \\\n\t\t\t\toutp += ncopy; ncopy = 0; \\\n\t\t\t\t*outp++ = '&'; \\\n\t\t\t\t*outp++ = 'a'; \\\n\t\t\t\t*outp++ = 'm'; \\\n\t\t\t\t*outp++ = 'p'; \\\n\t\t\t\t*outp++ = ';'; \\\n\t\t\t\tbreak; \\\n\t\t\tcase '<': \\\n\t\t\t\tmemcpy(outp, inp-ncopy, sizeof(*outp)*ncopy); \\\n\t\t\t\toutp += ncopy; ncopy = 0; \\\n\t\t\t\t*outp++ = '&'; \\\n\t\t\t\t*outp++ = 'l'; \\\n\t\t\t\t*outp++ = 't'; \\\n\t\t\t\t*outp++ = ';'; \\\n\t\t\t\tbreak; \\\n\t\t\tcase '>': \\\n\t\t\t\tmemcpy(outp, inp-ncopy, sizeof(*outp)*ncopy); \\\n\t\t\t\toutp += ncopy; ncopy = 0; \\\n\t\t\t\t*outp++ = '&'; \\\n\t\t\t\t*outp++ = 'g'; \\\n\t\t\t\t*outp++ = 't'; \\\n\t\t\t\t*outp++ = ';'; \\\n\t\t\t\tbreak; \\\n\t\t\tdefault: \\\n\t\t\t\tncopy++; \\\n\t\t\t} \\\n\t\t\tinp++; \\\n\t\t} \\",
+    "file_path": "src/markupsafe/_speedups.c",
+    "file_name": "_speedups.c",
+    "language": "c",
+    "start_line": 31,
+    "end_line": 70,
+    "chunk_index": 1
+  },
+  {
+    "content": "\t\t\t\t*outp++ = '&'; \\\n\t\t\t\t*outp++ = 'g'; \\\n\t\t\t\t*outp++ = 't'; \\\n\t\t\t\t*outp++ = ';'; \\\n\t\t\t\tbreak; \\\n\t\t\tdefault: \\\n\t\t\t\tncopy++; \\\n\t\t\t} \\\n\t\t\tinp++; \\\n\t\t} \\\n\t\tmemcpy(outp, inp-ncopy, sizeof(*outp)*ncopy); \\\n\t}\n\nstatic PyObject*\nescape_unicode_kind1(PyUnicodeObject *in)\n{\n\tPy_UCS1 *inp = PyUnicode_1BYTE_DATA(in);\n\tPy_UCS1 *inp_end = inp + PyUnicode_GET_LENGTH(in);\n\tPy_UCS1 *outp;\n\tPyObject *out;\n\tPy_ssize_t delta = 0;\n\n\tGET_DELTA(inp, inp_end, delta);\n\tif (!delta) {\n\t\tPy_INCREF(in);\n\t\treturn (PyObject*)in;\n\t}\n\n\tout = PyUnicode_New(PyUnicode_GET_LENGTH(in) + delta,\n\t\t\t\t\t\tPyUnicode_IS_ASCII(in) ? 127 : 255);\n\tif (!out)\n\t\treturn NULL;\n\n\tinp = PyUnicode_1BYTE_DATA(in);\n\toutp = PyUnicode_1BYTE_DATA(out);\n\tDO_ESCAPE(inp, inp_end, outp);\n\treturn out;\n}\n\nstatic PyObject*",
+    "file_path": "src/markupsafe/_speedups.c",
+    "file_name": "_speedups.c",
+    "language": "c",
+    "start_line": 61,
+    "end_line": 100,
+    "chunk_index": 2
+  },
+  {
+    "content": "\tif (!out)\n\t\treturn NULL;\n\n\tinp = PyUnicode_1BYTE_DATA(in);\n\toutp = PyUnicode_1BYTE_DATA(out);\n\tDO_ESCAPE(inp, inp_end, outp);\n\treturn out;\n}\n\nstatic PyObject*\nescape_unicode_kind2(PyUnicodeObject *in)\n{\n\tPy_UCS2 *inp = PyUnicode_2BYTE_DATA(in);\n\tPy_UCS2 *inp_end = inp + PyUnicode_GET_LENGTH(in);\n\tPy_UCS2 *outp;\n\tPyObject *out;\n\tPy_ssize_t delta = 0;\n\n\tGET_DELTA(inp, inp_end, delta);\n\tif (!delta) {\n\t\tPy_INCREF(in);\n\t\treturn (PyObject*)in;\n\t}\n\n\tout = PyUnicode_New(PyUnicode_GET_LENGTH(in) + delta, 65535);\n\tif (!out)\n\t\treturn NULL;\n\n\tinp = PyUnicode_2BYTE_DATA(in);\n\toutp = PyUnicode_2BYTE_DATA(out);\n\tDO_ESCAPE(inp, inp_end, outp);\n\treturn out;\n}\n\n\nstatic PyObject*\nescape_unicode_kind4(PyUnicodeObject *in)\n{\n\tPy_UCS4 *inp = PyUnicode_4BYTE_DATA(in);\n\tPy_UCS4 *inp_end = inp + PyUnicode_GET_LENGTH(in);",
+    "file_path": "src/markupsafe/_speedups.c",
+    "file_name": "_speedups.c",
+    "language": "c",
+    "start_line": 91,
+    "end_line": 130,
+    "chunk_index": 3
+  },
+  {
+    "content": "\tDO_ESCAPE(inp, inp_end, outp);\n\treturn out;\n}\n\n\nstatic PyObject*\nescape_unicode_kind4(PyUnicodeObject *in)\n{\n\tPy_UCS4 *inp = PyUnicode_4BYTE_DATA(in);\n\tPy_UCS4 *inp_end = inp + PyUnicode_GET_LENGTH(in);\n\tPy_UCS4 *outp;\n\tPyObject *out;\n\tPy_ssize_t delta = 0;\n\n\tGET_DELTA(inp, inp_end, delta);\n\tif (!delta) {\n\t\tPy_INCREF(in);\n\t\treturn (PyObject*)in;\n\t}\n\n\tout = PyUnicode_New(PyUnicode_GET_LENGTH(in) + delta, 1114111);\n\tif (!out)\n\t\treturn NULL;\n\n\tinp = PyUnicode_4BYTE_DATA(in);\n\toutp = PyUnicode_4BYTE_DATA(out);\n\tDO_ESCAPE(inp, inp_end, outp);\n\treturn out;\n}\n\nstatic PyObject*\nescape_unicode(PyObject *self, PyObject *s)\n{\n\tif (!PyUnicode_Check(s))\n\t\treturn NULL;\n\n    // This check is no longer needed in Python 3.12.\n\tif (PyUnicode_READY(s))\n\t\treturn NULL;\n",
+    "file_path": "src/markupsafe/_speedups.c",
+    "file_name": "_speedups.c",
+    "language": "c",
+    "start_line": 121,
+    "end_line": 160,
+    "chunk_index": 4
+  },
+  {
+    "content": "static PyObject*\nescape_unicode(PyObject *self, PyObject *s)\n{\n\tif (!PyUnicode_Check(s))\n\t\treturn NULL;\n\n    // This check is no longer needed in Python 3.12.\n\tif (PyUnicode_READY(s))\n\t\treturn NULL;\n\n\tswitch (PyUnicode_KIND(s)) {\n\tcase PyUnicode_1BYTE_KIND:\n\t\treturn escape_unicode_kind1((PyUnicodeObject*) s);\n\tcase PyUnicode_2BYTE_KIND:\n\t\treturn escape_unicode_kind2((PyUnicodeObject*) s);\n\tcase PyUnicode_4BYTE_KIND:\n\t\treturn escape_unicode_kind4((PyUnicodeObject*) s);\n\t}\n\tassert(0);  /* shouldn't happen */\n\treturn NULL;\n}\n\nstatic PyMethodDef module_methods[] = {\n\t{\"_escape_inner\", (PyCFunction)escape_unicode, METH_O, NULL},\n\t{NULL, NULL, 0, NULL}  /* Sentinel */\n};\n\nstatic PyModuleDef_Slot module_slots[] = {\n#ifdef Py_mod_multiple_interpreters  // Python 3.12+\n\t{Py_mod_multiple_interpreters, Py_MOD_PER_INTERPRETER_GIL_SUPPORTED},\n#endif\n#ifdef Py_mod_gil  // Python 3.13+\n\t{Py_mod_gil, Py_MOD_GIL_NOT_USED},\n#endif\n\t{0, NULL}  /* Sentinel */\n};\n\nstatic struct PyModuleDef module_definition = {\n\t.m_base = PyModuleDef_HEAD_INIT,\n\t.m_name = \"markupsafe._speedups\",",
+    "file_path": "src/markupsafe/_speedups.c",
+    "file_name": "_speedups.c",
+    "language": "c",
+    "start_line": 151,
+    "end_line": 190,
+    "chunk_index": 5
+  },
+  {
+    "content": "#endif\n#ifdef Py_mod_gil  // Python 3.13+\n\t{Py_mod_gil, Py_MOD_GIL_NOT_USED},\n#endif\n\t{0, NULL}  /* Sentinel */\n};\n\nstatic struct PyModuleDef module_definition = {\n\t.m_base = PyModuleDef_HEAD_INIT,\n\t.m_name = \"markupsafe._speedups\",\n\t.m_size = 0,\n\t.m_methods = module_methods,\n\t.m_slots = module_slots,\n};\n\nPyMODINIT_FUNC\nPyInit__speedups(void)\n{\n\treturn PyModuleDef_Init(&module_definition);\n}",
+    "file_path": "src/markupsafe/_speedups.c",
+    "file_name": "_speedups.c",
+    "language": "c",
+    "start_line": 181,
+    "end_line": 200,
+    "chunk_index": 6
+  },
+  {
+    "content": "from __future__ import annotations\n\nimport collections.abc as cabc\nimport string\nimport typing as t\n\ntry:\n    from ._speedups import _escape_inner\nexcept ImportError:\n    from ._native import _escape_inner\n\nif t.TYPE_CHECKING:\n    import typing_extensions as te\n\n\nclass _HasHTML(t.Protocol):\n    def __html__(self, /) -> str: ...\n\n\nclass _TPEscape(t.Protocol):\n    def __call__(self, s: t.Any, /) -> Markup: ...\n\n\ndef escape(s: t.Any, /) -> Markup:\n    \"\"\"Replace the characters ``&``, ``<``, ``>``, ``'``, and ``\"`` in\n    the string with HTML-safe sequences. Use this if you need to display\n    text that might contain such characters in HTML.\n\n    If the object has an ``__html__`` method, it is called and the\n    return value is assumed to already be safe for HTML.\n\n    :param s: An object to be converted to a string and escaped.\n    :return: A :class:`Markup` string with the escaped text.\n    \"\"\"\n    # If the object is already a plain string, skip __html__ check and string\n    # conversion. This is the most common use case.\n    # Use type(s) instead of s.__class__ because a proxy object may be reporting\n    # the __class__ of the proxied value.\n    if type(s) is str:\n        return Markup(_escape_inner(s))",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": "\n    :param s: An object to be converted to a string and escaped.\n    :return: A :class:`Markup` string with the escaped text.\n    \"\"\"\n    # If the object is already a plain string, skip __html__ check and string\n    # conversion. This is the most common use case.\n    # Use type(s) instead of s.__class__ because a proxy object may be reporting\n    # the __class__ of the proxied value.\n    if type(s) is str:\n        return Markup(_escape_inner(s))\n\n    if hasattr(s, \"__html__\"):\n        return Markup(s.__html__())\n\n    return Markup(_escape_inner(str(s)))\n\n\ndef escape_silent(s: t.Any | None, /) -> Markup:\n    \"\"\"Like :func:`escape` but treats ``None`` as the empty string.\n    Useful with optional values, as otherwise you get the string\n    ``'None'`` when the value is ``None``.\n\n    >>> escape(None)\n    Markup('None')\n    >>> escape_silent(None)\n    Markup('')\n    \"\"\"\n    if s is None:\n        return Markup()\n\n    return escape(s)\n\n\ndef soft_str(s: t.Any, /) -> str:\n    \"\"\"Convert an object to a string if it isn't already. This preserves\n    a :class:`Markup` string rather than converting it back to a basic\n    string, so it will still be marked as safe and won't be escaped\n    again.\n\n    >>> value = escape(\"<User 1>\")",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 31,
+    "end_line": 70,
+    "chunk_index": 1
+  },
+  {
+    "content": "    return escape(s)\n\n\ndef soft_str(s: t.Any, /) -> str:\n    \"\"\"Convert an object to a string if it isn't already. This preserves\n    a :class:`Markup` string rather than converting it back to a basic\n    string, so it will still be marked as safe and won't be escaped\n    again.\n\n    >>> value = escape(\"<User 1>\")\n    >>> value\n    Markup('&lt;User 1&gt;')\n    >>> escape(str(value))\n    Markup('&amp;lt;User 1&amp;gt;')\n    >>> escape(soft_str(value))\n    Markup('&lt;User 1&gt;')\n    \"\"\"\n    if not isinstance(s, str):\n        return str(s)\n\n    return s\n\n\nclass Markup(str):\n    \"\"\"A string that is ready to be safely inserted into an HTML or XML\n    document, either because it was escaped or because it was marked\n    safe.\n\n    Passing an object to the constructor converts it to text and wraps\n    it to mark it safe without escaping. To escape the text, use the\n    :meth:`escape` class method instead.\n\n    >>> Markup(\"Hello, <em>World</em>!\")\n    Markup('Hello, <em>World</em>!')\n    >>> Markup(42)\n    Markup('42')\n    >>> Markup.escape(\"Hello, <em>World</em>!\")\n    Markup('Hello &lt;em&gt;World&lt;/em&gt;!')\n\n    This implements the ``__html__()`` interface that some frameworks",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 61,
+    "end_line": 100,
+    "chunk_index": 2
+  },
+  {
+    "content": "    :meth:`escape` class method instead.\n\n    >>> Markup(\"Hello, <em>World</em>!\")\n    Markup('Hello, <em>World</em>!')\n    >>> Markup(42)\n    Markup('42')\n    >>> Markup.escape(\"Hello, <em>World</em>!\")\n    Markup('Hello &lt;em&gt;World&lt;/em&gt;!')\n\n    This implements the ``__html__()`` interface that some frameworks\n    use. Passing an object that implements ``__html__()`` will wrap the\n    output of that method, marking it safe.\n\n    >>> class Foo:\n    ...     def __html__(self):\n    ...         return '<a href=\"/foo\">foo</a>'\n    ...\n    >>> Markup(Foo())\n    Markup('<a href=\"/foo\">foo</a>')\n\n    This is a subclass of :class:`str`. It has the same methods, but\n    escapes their arguments and returns a ``Markup`` instance.\n\n    >>> Markup(\"<em>%s</em>\") % (\"foo & bar\",)\n    Markup('<em>foo &amp; bar</em>')\n    >>> Markup(\"<em>Hello</em> \") + \"<foo>\"\n    Markup('<em>Hello</em> &lt;foo&gt;')\n    \"\"\"\n\n    __slots__ = ()\n\n    def __new__(\n        cls, object: t.Any = \"\", encoding: str | None = None, errors: str = \"strict\"\n    ) -> te.Self:\n        if hasattr(object, \"__html__\"):\n            object = object.__html__()\n\n        if encoding is None:\n            return super().__new__(cls, object)\n",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 91,
+    "end_line": 130,
+    "chunk_index": 3
+  },
+  {
+    "content": "\n    def __new__(\n        cls, object: t.Any = \"\", encoding: str | None = None, errors: str = \"strict\"\n    ) -> te.Self:\n        if hasattr(object, \"__html__\"):\n            object = object.__html__()\n\n        if encoding is None:\n            return super().__new__(cls, object)\n\n        return super().__new__(cls, object, encoding, errors)\n\n    def __html__(self, /) -> te.Self:\n        return self\n\n    def __add__(self, value: str | _HasHTML, /) -> te.Self:\n        if isinstance(value, str) or hasattr(value, \"__html__\"):\n            return self.__class__(super().__add__(self.escape(value)))\n\n        return NotImplemented\n\n    def __radd__(self, value: str | _HasHTML, /) -> te.Self:\n        if isinstance(value, str) or hasattr(value, \"__html__\"):\n            return self.escape(value).__add__(self)\n\n        return NotImplemented\n\n    def __mul__(self, value: t.SupportsIndex, /) -> te.Self:\n        return self.__class__(super().__mul__(value))\n\n    def __rmul__(self, value: t.SupportsIndex, /) -> te.Self:\n        return self.__class__(super().__mul__(value))\n\n    def __mod__(self, value: t.Any, /) -> te.Self:\n        if isinstance(value, tuple):\n            # a tuple of arguments, each wrapped\n            value = tuple(_MarkupEscapeHelper(x, self.escape) for x in value)\n        elif hasattr(type(value), \"__getitem__\") and not isinstance(value, str):\n            # a mapping of arguments, wrapped\n            value = _MarkupEscapeHelper(value, self.escape)",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 121,
+    "end_line": 160,
+    "chunk_index": 4
+  },
+  {
+    "content": "    def __rmul__(self, value: t.SupportsIndex, /) -> te.Self:\n        return self.__class__(super().__mul__(value))\n\n    def __mod__(self, value: t.Any, /) -> te.Self:\n        if isinstance(value, tuple):\n            # a tuple of arguments, each wrapped\n            value = tuple(_MarkupEscapeHelper(x, self.escape) for x in value)\n        elif hasattr(type(value), \"__getitem__\") and not isinstance(value, str):\n            # a mapping of arguments, wrapped\n            value = _MarkupEscapeHelper(value, self.escape)\n        else:\n            # a single argument, wrapped with the helper and a tuple\n            value = (_MarkupEscapeHelper(value, self.escape),)\n\n        return self.__class__(super().__mod__(value))\n\n    def __repr__(self, /) -> str:\n        return f\"{self.__class__.__name__}({super().__repr__()})\"\n\n    def join(self, iterable: cabc.Iterable[str | _HasHTML], /) -> te.Self:\n        return self.__class__(super().join(map(self.escape, iterable)))\n\n    def split(  # type: ignore[override]\n        self, /, sep: str | None = None, maxsplit: t.SupportsIndex = -1\n    ) -> list[te.Self]:\n        return [self.__class__(v) for v in super().split(sep, maxsplit)]\n\n    def rsplit(  # type: ignore[override]\n        self, /, sep: str | None = None, maxsplit: t.SupportsIndex = -1\n    ) -> list[te.Self]:\n        return [self.__class__(v) for v in super().rsplit(sep, maxsplit)]\n\n    def splitlines(  # type: ignore[override]\n        self, /, keepends: bool = False\n    ) -> list[te.Self]:\n        return [self.__class__(v) for v in super().splitlines(keepends)]\n\n    def unescape(self, /) -> str:\n        \"\"\"Convert escaped markup back into a text string. This replaces\n        HTML entities with the characters they represent.",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 151,
+    "end_line": 190,
+    "chunk_index": 5
+  },
+  {
+    "content": "        return [self.__class__(v) for v in super().rsplit(sep, maxsplit)]\n\n    def splitlines(  # type: ignore[override]\n        self, /, keepends: bool = False\n    ) -> list[te.Self]:\n        return [self.__class__(v) for v in super().splitlines(keepends)]\n\n    def unescape(self, /) -> str:\n        \"\"\"Convert escaped markup back into a text string. This replaces\n        HTML entities with the characters they represent.\n\n        >>> Markup(\"Main &raquo; <em>About</em>\").unescape()\n        'Main » <em>About</em>'\n        \"\"\"\n        from html import unescape\n\n        return unescape(str(self))\n\n    def striptags(self, /) -> str:\n        \"\"\":meth:`unescape` the markup, remove tags, and normalize\n        whitespace to single spaces.\n\n        >>> Markup(\"Main &raquo;\\t<em>About</em>\").striptags()\n        'Main » About'\n        \"\"\"\n        value = str(self)\n\n        # Look for comments then tags separately. Otherwise, a comment that\n        # contains a tag would end early, leaving some of the comment behind.\n\n        # keep finding comment start marks\n        while (start := value.find(\"<!--\")) != -1:\n            # find a comment end mark beyond the start, otherwise stop\n            if (end := value.find(\"-->\", start)) == -1:\n                break\n\n            value = f\"{value[:start]}{value[end + 3 :]}\"\n\n        # remove tags using the same method\n        while (start := value.find(\"<\")) != -1:",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 181,
+    "end_line": 220,
+    "chunk_index": 6
+  },
+  {
+    "content": "        # keep finding comment start marks\n        while (start := value.find(\"<!--\")) != -1:\n            # find a comment end mark beyond the start, otherwise stop\n            if (end := value.find(\"-->\", start)) == -1:\n                break\n\n            value = f\"{value[:start]}{value[end + 3 :]}\"\n\n        # remove tags using the same method\n        while (start := value.find(\"<\")) != -1:\n            if (end := value.find(\">\", start)) == -1:\n                break\n\n            value = f\"{value[:start]}{value[end + 1 :]}\"\n\n        # collapse spaces\n        value = \" \".join(value.split())\n        return self.__class__(value).unescape()\n\n    @classmethod\n    def escape(cls, s: t.Any, /) -> te.Self:\n        \"\"\"Escape a string. Calls :func:`escape` and ensures that for\n        subclasses the correct type is returned.\n        \"\"\"\n        rv = escape(s)\n\n        if rv.__class__ is not cls:\n            return cls(rv)\n\n        return rv  # type: ignore[return-value]\n\n    def __getitem__(self, key: t.SupportsIndex | slice, /) -> te.Self:\n        return self.__class__(super().__getitem__(key))\n\n    def capitalize(self, /) -> te.Self:\n        return self.__class__(super().capitalize())\n\n    def title(self, /) -> te.Self:\n        return self.__class__(super().title())\n",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 211,
+    "end_line": 250,
+    "chunk_index": 7
+  },
+  {
+    "content": "\n    def __getitem__(self, key: t.SupportsIndex | slice, /) -> te.Self:\n        return self.__class__(super().__getitem__(key))\n\n    def capitalize(self, /) -> te.Self:\n        return self.__class__(super().capitalize())\n\n    def title(self, /) -> te.Self:\n        return self.__class__(super().title())\n\n    def lower(self, /) -> te.Self:\n        return self.__class__(super().lower())\n\n    def upper(self, /) -> te.Self:\n        return self.__class__(super().upper())\n\n    def replace(self, old: str, new: str, count: t.SupportsIndex = -1, /) -> te.Self:\n        return self.__class__(super().replace(old, self.escape(new), count))\n\n    def ljust(self, width: t.SupportsIndex, fillchar: str = \" \", /) -> te.Self:\n        return self.__class__(super().ljust(width, self.escape(fillchar)))\n\n    def rjust(self, width: t.SupportsIndex, fillchar: str = \" \", /) -> te.Self:\n        return self.__class__(super().rjust(width, self.escape(fillchar)))\n\n    def lstrip(self, chars: str | None = None, /) -> te.Self:\n        return self.__class__(super().lstrip(chars))\n\n    def rstrip(self, chars: str | None = None, /) -> te.Self:\n        return self.__class__(super().rstrip(chars))\n\n    def center(self, width: t.SupportsIndex, fillchar: str = \" \", /) -> te.Self:\n        return self.__class__(super().center(width, self.escape(fillchar)))\n\n    def strip(self, chars: str | None = None, /) -> te.Self:\n        return self.__class__(super().strip(chars))\n\n    def translate(\n        self,\n        table: cabc.Mapping[int, str | int | None],  # type: ignore[override]",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 241,
+    "end_line": 280,
+    "chunk_index": 8
+  },
+  {
+    "content": "\n    def center(self, width: t.SupportsIndex, fillchar: str = \" \", /) -> te.Self:\n        return self.__class__(super().center(width, self.escape(fillchar)))\n\n    def strip(self, chars: str | None = None, /) -> te.Self:\n        return self.__class__(super().strip(chars))\n\n    def translate(\n        self,\n        table: cabc.Mapping[int, str | int | None],  # type: ignore[override]\n        /,\n    ) -> str:\n        return self.__class__(super().translate(table))\n\n    def expandtabs(self, /, tabsize: t.SupportsIndex = 8) -> te.Self:\n        return self.__class__(super().expandtabs(tabsize))\n\n    def swapcase(self, /) -> te.Self:\n        return self.__class__(super().swapcase())\n\n    def zfill(self, width: t.SupportsIndex, /) -> te.Self:\n        return self.__class__(super().zfill(width))\n\n    def casefold(self, /) -> te.Self:\n        return self.__class__(super().casefold())\n\n    def removeprefix(self, prefix: str, /) -> te.Self:\n        return self.__class__(super().removeprefix(prefix))\n\n    def removesuffix(self, suffix: str) -> te.Self:\n        return self.__class__(super().removesuffix(suffix))\n\n    def partition(self, sep: str, /) -> tuple[te.Self, te.Self, te.Self]:\n        left, sep, right = super().partition(sep)\n        cls = self.__class__\n        return cls(left), cls(sep), cls(right)\n\n    def rpartition(self, sep: str, /) -> tuple[te.Self, te.Self, te.Self]:\n        left, sep, right = super().rpartition(sep)\n        cls = self.__class__",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 271,
+    "end_line": 310,
+    "chunk_index": 9
+  },
+  {
+    "content": "        return self.__class__(super().removesuffix(suffix))\n\n    def partition(self, sep: str, /) -> tuple[te.Self, te.Self, te.Self]:\n        left, sep, right = super().partition(sep)\n        cls = self.__class__\n        return cls(left), cls(sep), cls(right)\n\n    def rpartition(self, sep: str, /) -> tuple[te.Self, te.Self, te.Self]:\n        left, sep, right = super().rpartition(sep)\n        cls = self.__class__\n        return cls(left), cls(sep), cls(right)\n\n    def format(self, *args: t.Any, **kwargs: t.Any) -> te.Self:\n        formatter = EscapeFormatter(self.escape)\n        return self.__class__(formatter.vformat(self, args, kwargs))\n\n    def format_map(\n        self,\n        mapping: cabc.Mapping[str, t.Any],  # type: ignore[override]\n        /,\n    ) -> te.Self:\n        formatter = EscapeFormatter(self.escape)\n        return self.__class__(formatter.vformat(self, (), mapping))\n\n    def __html_format__(self, format_spec: str, /) -> te.Self:\n        if format_spec:\n            raise ValueError(\"Unsupported format specification for Markup.\")\n\n        return self\n\n\nclass EscapeFormatter(string.Formatter):\n    __slots__ = (\"escape\",)\n\n    def __init__(self, escape: _TPEscape) -> None:\n        self.escape: _TPEscape = escape\n        super().__init__()\n\n    def format_field(self, value: t.Any, format_spec: str) -> str:\n        if hasattr(value, \"__html_format__\"):",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 301,
+    "end_line": 340,
+    "chunk_index": 10
+  },
+  {
+    "content": "\nclass EscapeFormatter(string.Formatter):\n    __slots__ = (\"escape\",)\n\n    def __init__(self, escape: _TPEscape) -> None:\n        self.escape: _TPEscape = escape\n        super().__init__()\n\n    def format_field(self, value: t.Any, format_spec: str) -> str:\n        if hasattr(value, \"__html_format__\"):\n            rv = value.__html_format__(format_spec)\n        elif hasattr(value, \"__html__\"):\n            if format_spec:\n                raise ValueError(\n                    f\"Format specifier {format_spec} given, but {type(value)} does not\"\n                    \" define __html_format__. A class that defines __html__ must define\"\n                    \" __html_format__ to work with format specifiers.\"\n                )\n            rv = value.__html__()\n        else:\n            # We need to make sure the format spec is str here as\n            # otherwise the wrong callback methods are invoked.\n            rv = super().format_field(value, str(format_spec))\n        return str(self.escape(rv))\n\n\nclass _MarkupEscapeHelper:\n    \"\"\"Helper for :meth:`Markup.__mod__`.\"\"\"\n\n    __slots__ = (\"obj\", \"escape\")\n\n    def __init__(self, obj: t.Any, escape: _TPEscape) -> None:\n        self.obj: t.Any = obj\n        self.escape: _TPEscape = escape\n\n    def __getitem__(self, key: t.Any, /) -> te.Self:\n        return self.__class__(self.obj[key], self.escape)\n\n    def __str__(self, /) -> str:\n        return str(self.escape(self.obj))",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 331,
+    "end_line": 370,
+    "chunk_index": 11
+  },
+  {
+    "content": "\n    def __init__(self, obj: t.Any, escape: _TPEscape) -> None:\n        self.obj: t.Any = obj\n        self.escape: _TPEscape = escape\n\n    def __getitem__(self, key: t.Any, /) -> te.Self:\n        return self.__class__(self.obj[key], self.escape)\n\n    def __str__(self, /) -> str:\n        return str(self.escape(self.obj))\n\n    def __repr__(self, /) -> str:\n        return str(self.escape(repr(self.obj)))\n\n    def __int__(self, /) -> int:\n        return int(self.obj)\n\n    def __float__(self, /) -> float:\n        return float(self.obj)",
+    "file_path": "src/markupsafe/__init__.py",
+    "file_name": "__init__.py",
+    "language": "python",
+    "start_line": 361,
+    "end_line": 379,
+    "chunk_index": 12
+  },
+  {
+    "content": "from __future__ import annotations\n\nimport sys\nimport typing as t\nfrom types import ModuleType\n\nimport pytest\n\nimport markupsafe\nfrom markupsafe import _native\n\ntry:\n    from markupsafe import _speedups\nexcept ImportError:\n    _speedups = None  # type: ignore\n\n\ndef pytest_report_header() -> list[str]:\n    \"\"\"Return a list of strings to be displayed in the header of the report.\"\"\"\n    if sys.version_info >= (3, 13):\n        return [f\"Free-threaded: {not sys._is_gil_enabled()}\"]\n\n    return []\n\n\n@pytest.fixture(\n    scope=\"session\",\n    autouse=True,\n    params=(\n        _native,\n        pytest.param(\n            _speedups,\n            marks=pytest.mark.skipif(_speedups is None, reason=\"speedups unavailable\"),\n        ),\n    ),\n)\ndef _mod(request: pytest.FixtureRequest) -> None:\n    mod = t.cast(ModuleType, request.param)\n    markupsafe._escape_inner = mod._escape_inner  # type: ignore[attr-defined]",
+    "file_path": "tests/conftest.py",
+    "file_name": "conftest.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 39,
+    "chunk_index": 0
+  },
+  {
+    "content": "from __future__ import annotations\n\nimport typing as t\n\nimport pytest\n\nfrom markupsafe import escape\nfrom markupsafe import Markup\n\n\n@pytest.mark.parametrize(\n    (\"value\", \"expect\"),\n    (\n        # empty\n        (\"\", \"\"),\n        # ascii\n        (\"abcd&><'\\\"efgh\", \"abcd&amp;&gt;&lt;&#39;&#34;efgh\"),\n        (\"&><'\\\"efgh\", \"&amp;&gt;&lt;&#39;&#34;efgh\"),\n        (\"abcd&><'\\\"\", \"abcd&amp;&gt;&lt;&#39;&#34;\"),\n        # 2 byte\n        (\"こんにちは&><'\\\"こんばんは\", \"こんにちは&amp;&gt;&lt;&#39;&#34;こんばんは\"),\n        (\"&><'\\\"こんばんは\", \"&amp;&gt;&lt;&#39;&#34;こんばんは\"),\n        (\"こんにちは&><'\\\"\", \"こんにちは&amp;&gt;&lt;&#39;&#34;\"),\n        # 4 byte\n        (\n            \"\\U0001f363\\U0001f362&><'\\\"\\U0001f37a xyz\",\n            \"\\U0001f363\\U0001f362&amp;&gt;&lt;&#39;&#34;\\U0001f37a xyz\",\n        ),\n        (\"&><'\\\"\\U0001f37a xyz\", \"&amp;&gt;&lt;&#39;&#34;\\U0001f37a xyz\"),\n        (\"\\U0001f363\\U0001f362&><'\\\"\", \"\\U0001f363\\U0001f362&amp;&gt;&lt;&#39;&#34;\"),\n    ),\n)\ndef test_escape(value: str, expect: str) -> None:\n    assert escape(value) == Markup(expect)\n\n\nclass Proxy:\n    def __init__(self, value: t.Any) -> None:\n        self.__value = value\n",
+    "file_path": "tests/test_escape.py",
+    "file_name": "test_escape.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": "    ),\n)\ndef test_escape(value: str, expect: str) -> None:\n    assert escape(value) == Markup(expect)\n\n\nclass Proxy:\n    def __init__(self, value: t.Any) -> None:\n        self.__value = value\n\n    @property  # type: ignore[misc]\n    def __class__(self) -> type[t.Any]:\n        # Make o.__class__ and isinstance(o, str) see the proxied object.\n        return self.__value.__class__  # type: ignore[no-any-return]\n\n    def __str__(self) -> str:\n        return str(self.__value)\n\n\ndef test_proxy() -> None:\n    \"\"\"Handle a proxy object that pretends its __class__ is str.\"\"\"\n    p = Proxy(\"test\")\n    assert p.__class__ is str\n    assert isinstance(p, str)\n    assert escape(p) == Markup(\"test\")\n\n\nclass ReferenceStr(str):\n    def __str__(self) -> str:\n        # This should return a str, but it returns the subclass instead.\n        return self\n\n\ndef test_subclass() -> None:\n    \"\"\"Handle if str(o) does not return a plain str.\"\"\"\n    s = ReferenceStr(\"test\")\n    assert isinstance(s, str)\n    assert escape(s) == Markup(\"test\")",
+    "file_path": "tests/test_escape.py",
+    "file_name": "test_escape.py",
+    "language": "python",
+    "start_line": 31,
+    "end_line": 68,
+    "chunk_index": 1
+  },
+  {
+    "content": "from __future__ import annotations\n\nimport pytest\n\nfrom markupsafe import escape\n\n\nclass CustomHtmlThatRaises:\n    def __html__(self) -> str:\n        raise ValueError(123)\n\n\ndef test_exception_custom_html() -> None:\n    \"\"\"Checks whether exceptions in custom __html__ implementations are\n    propagated correctly.\n\n    There was a bug in the native implementation at some point:\n    https://github.com/pallets/markupsafe/issues/108\n    \"\"\"\n    obj = CustomHtmlThatRaises()\n\n    with pytest.raises(ValueError):\n        escape(obj)",
+    "file_path": "tests/test_exception_custom_html.py",
+    "file_name": "test_exception_custom_html.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 23,
+    "chunk_index": 0
+  },
+  {
+    "content": "import sys\n\nimport pytest\n\nimport markupsafe\n\ntry:\n    from markupsafe import _speedups\nexcept ImportError:\n    _speedups = None  # type: ignore[assignment]\n\n\n@pytest.mark.thread_unsafe(reason=\"Tampers with sys.modules\")\n@pytest.mark.skipif(_speedups is None, reason=\"speedups unavailable\")\ndef test_ext_init() -> None:\n    \"\"\"Test that the extension module uses multi-phase init by checking that\n    uncached imports result in different module objects.\n    \"\"\"\n    if markupsafe._escape_inner is not _speedups._escape_inner:  # type: ignore[attr-defined]\n        pytest.skip(\"speedups not active\")\n\n    for k in [k for k in sys.modules if k.startswith(\"markupsafe\")]:\n        del sys.modules[k]\n\n    import markupsafe._speedups as new\n\n    assert _speedups.__dict__ != new.__dict__\n    assert _speedups._escape_inner is not new._escape_inner",
+    "file_path": "tests/test_ext_init.py",
+    "file_name": "test_ext_init.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 28,
+    "chunk_index": 0
+  },
+  {
+    "content": "from __future__ import annotations\n\nimport gc\n\nimport pytest\n\nfrom markupsafe import escape\n\n\n@pytest.mark.thread_unsafe(reason=\"Tests gc.get_objects()\")\ndef test_markup_leaks() -> None:\n    counts = set()\n    # Try to start with a \"clean\" count. Works for PyPy but not 3.13 JIT.\n    gc.collect()\n\n    for _ in range(20):\n        for _ in range(1000):\n            escape(\"foo\")\n            escape(\"<foo>\")\n            escape(\"foo\")\n            escape(\"<foo>\")\n\n        counts.add(len(gc.get_objects()))\n\n    # Some implementations, such as PyPy and Python 3.13 JIT, end up with 2\n    # counts rather than one. Presumably this is internals stabilizing. A leak\n    # would presumably have a different count every loop.\n    assert len(counts) < 3",
+    "file_path": "tests/test_leak.py",
+    "file_name": "test_leak.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 28,
+    "chunk_index": 0
+  },
+  {
+    "content": "from __future__ import annotations\n\nimport typing as t\n\nimport pytest\n\nfrom markupsafe import escape\nfrom markupsafe import escape_silent\nfrom markupsafe import Markup\nfrom markupsafe import soft_str\n\n\ndef test_adding() -> None:\n    unsafe = '<script type=\"application/x-some-script\">alert(\"foo\");</script>'\n    safe = Markup(\"<em>username</em>\")\n    assert unsafe + safe == str(escape(unsafe)) + str(safe)\n\n\n@pytest.mark.parametrize(\n    (\"template\", \"data\", \"expect\"),\n    (\n        (\"<em>%s</em>\", \"<bad user>\", \"<em>&lt;bad user&gt;</em>\"),\n        (\n            \"<em>%(username)s</em>\",\n            {\"username\": \"<bad user>\"},\n            \"<em>&lt;bad user&gt;</em>\",\n        ),\n        (\"%i\", 3.14, \"3\"),\n        (\"%.2f\", 3.14, \"3.14\"),\n    ),\n)\ndef test_string_interpolation(template: str, data: t.Any, expect: str) -> None:\n    assert Markup(template) % data == expect\n\n\ndef test_type_behavior() -> None:\n    assert type(Markup(\"foo\") + \"bar\") is Markup\n    x = Markup(\"foo\")\n    assert x.__html__() is x\n",
+    "file_path": "tests/test_markupsafe.py",
+    "file_name": "test_markupsafe.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 40,
+    "chunk_index": 0
+  },
+  {
+    "content": ")\ndef test_string_interpolation(template: str, data: t.Any, expect: str) -> None:\n    assert Markup(template) % data == expect\n\n\ndef test_type_behavior() -> None:\n    assert type(Markup(\"foo\") + \"bar\") is Markup\n    x = Markup(\"foo\")\n    assert x.__html__() is x\n\n\ndef test_html_interop() -> None:\n    class Foo:\n        def __html__(self) -> str:\n            return \"<em>awesome</em>\"\n\n        def __str__(self) -> str:\n            return \"awesome\"\n\n    assert Markup(Foo()) == \"<em>awesome</em>\"\n    result = Markup(\"<strong>%s</strong>\") % Foo()\n    assert result == \"<strong><em>awesome</em></strong>\"\n\n\n@pytest.mark.parametrize(\"args\", [\"foo\", 42, (\"foo\", 42)])\ndef test_missing_interpol(args: t.Any) -> None:\n    with pytest.raises(TypeError):\n        assert Markup(\"<em></em>\") % args\n\n\ndef test_tuple_interpol() -> None:\n    result = Markup(\"<em>%s:%s</em>\") % (\"<foo>\", \"<bar>\")\n    expect = Markup(\"<em>&lt;foo&gt;:&lt;bar&gt;</em>\")\n    assert result == expect\n\n\ndef test_dict_interpol() -> None:\n    result = Markup(\"<em>%(foo)s</em>\") % {\"foo\": \"<foo>\"}\n    expect = Markup(\"<em>&lt;foo&gt;</em>\")\n    assert result == expect",
+    "file_path": "tests/test_markupsafe.py",
+    "file_name": "test_markupsafe.py",
+    "language": "python",
+    "start_line": 31,
+    "end_line": 70,
+    "chunk_index": 1
+  },
+  {
+    "content": "def test_tuple_interpol() -> None:\n    result = Markup(\"<em>%s:%s</em>\") % (\"<foo>\", \"<bar>\")\n    expect = Markup(\"<em>&lt;foo&gt;:&lt;bar&gt;</em>\")\n    assert result == expect\n\n\ndef test_dict_interpol() -> None:\n    result = Markup(\"<em>%(foo)s</em>\") % {\"foo\": \"<foo>\"}\n    expect = Markup(\"<em>&lt;foo&gt;</em>\")\n    assert result == expect\n\n    result = Markup(\"<em>%(foo)s:%(bar)s</em>\") % {\"foo\": \"<foo>\", \"bar\": \"<bar>\"}\n    expect = Markup(\"<em>&lt;foo&gt;:&lt;bar&gt;</em>\")\n    assert result == expect\n\n\ndef test_escaping() -> None:\n    assert escape(\"\\\"<>&'\") == \"&#34;&lt;&gt;&amp;&#39;\"\n    assert (\n        Markup(\n            \"<!-- outer comment -->\"\n            \"<em>Foo &amp; Bar\"\n            \" <!-- inner comment about <em> -->\\n \"\n            \"</em>\"\n            \"<!-- comment\\nwith\\nnewlines\\n-->\"\n            \"<meta content='tag\\nwith\\nnewlines'>\"\n        ).striptags()\n        == \"Foo & Bar\"\n    )\n\n\ndef test_unescape() -> None:\n    assert Markup(\"&lt;test&gt;\").unescape() == \"<test>\"\n\n    result = Markup(\"jack & tavi are cooler than mike &amp; russ\").unescape()\n    expect = \"jack & tavi are cooler than mike & russ\"\n    assert result == expect\n\n    original = \"&foo&#x3b;\"\n    once = Markup(original).unescape()",
+    "file_path": "tests/test_markupsafe.py",
+    "file_name": "test_markupsafe.py",
+    "language": "python",
+    "start_line": 61,
+    "end_line": 100,
+    "chunk_index": 2
+  },
+  {
+    "content": "\ndef test_unescape() -> None:\n    assert Markup(\"&lt;test&gt;\").unescape() == \"<test>\"\n\n    result = Markup(\"jack & tavi are cooler than mike &amp; russ\").unescape()\n    expect = \"jack & tavi are cooler than mike & russ\"\n    assert result == expect\n\n    original = \"&foo&#x3b;\"\n    once = Markup(original).unescape()\n    twice = Markup(once).unescape()\n    expect = \"&foo;\"\n    assert once == expect\n    assert twice == expect\n\n\ndef test_format() -> None:\n    result = Markup(\"<em>{awesome}</em>\").format(awesome=\"<awesome>\")\n    assert result == \"<em>&lt;awesome&gt;</em>\"\n\n    result = Markup(\"{0[1][bar]}\").format([0, {\"bar\": \"<bar/>\"}])\n    assert result == \"&lt;bar/&gt;\"\n\n    result = Markup(\"{0[1][bar]}\").format([0, {\"bar\": Markup(\"<bar/>\")}])\n    assert result == \"<bar/>\"\n\n\ndef test_format_map() -> None:\n    result = Markup(\"<em>{value}</em>\").format_map({\"value\": \"<value>\"})\n    assert result == \"<em>&lt;value&gt;</em>\"\n\n\ndef test_formatting_empty() -> None:\n    formatted = Markup(\"{}\").format(0)\n    assert formatted == Markup(\"0\")\n\n\ndef test_custom_formatting() -> None:\n    class HasHTMLOnly:\n        def __html__(self) -> Markup:",
+    "file_path": "tests/test_markupsafe.py",
+    "file_name": "test_markupsafe.py",
+    "language": "python",
+    "start_line": 91,
+    "end_line": 130,
+    "chunk_index": 3
+  },
+  {
+    "content": "\n\ndef test_formatting_empty() -> None:\n    formatted = Markup(\"{}\").format(0)\n    assert formatted == Markup(\"0\")\n\n\ndef test_custom_formatting() -> None:\n    class HasHTMLOnly:\n        def __html__(self) -> Markup:\n            return Markup(\"<foo>\")\n\n    class HasHTMLAndFormat:\n        def __html__(self) -> Markup:\n            return Markup(\"<foo>\")\n\n        def __html_format__(self, spec: str) -> Markup:\n            return Markup(\"<FORMAT>\")\n\n    assert Markup(\"{0}\").format(HasHTMLOnly()) == Markup(\"<foo>\")\n    assert Markup(\"{0}\").format(HasHTMLAndFormat()) == Markup(\"<FORMAT>\")\n\n\ndef test_complex_custom_formatting() -> None:\n    class User:\n        def __init__(self, id: int, username: str) -> None:\n            self.id = id\n            self.username = username\n\n        def __html_format__(self, format_spec: str) -> Markup:\n            if format_spec == \"link\":\n                return Markup('<a href=\"/user/{0}\">{1}</a>').format(\n                    self.id, self.__html__()\n                )\n            elif format_spec:\n                raise ValueError(\"Invalid format spec\")\n\n            return self.__html__()\n\n        def __html__(self) -> Markup:",
+    "file_path": "tests/test_markupsafe.py",
+    "file_name": "test_markupsafe.py",
+    "language": "python",
+    "start_line": 121,
+    "end_line": 160,
+    "chunk_index": 4
+  },
+  {
+    "content": "            if format_spec == \"link\":\n                return Markup('<a href=\"/user/{0}\">{1}</a>').format(\n                    self.id, self.__html__()\n                )\n            elif format_spec:\n                raise ValueError(\"Invalid format spec\")\n\n            return self.__html__()\n\n        def __html__(self) -> Markup:\n            return Markup(\"<span class=user>{0}</span>\").format(self.username)\n\n    user = User(1, \"foo\")\n    result = Markup(\"<p>User: {0:link}\").format(user)\n    expect = Markup('<p>User: <a href=\"/user/1\"><span class=user>foo</span></a>')\n    assert result == expect\n\n\ndef test_formatting_with_objects() -> None:\n    class Stringable:\n        def __str__(self) -> str:\n            return \"строка\"\n\n    assert Markup(\"{s}\").format(s=Stringable()) == Markup(\"строка\")\n\n\ndef test_escape_silent() -> None:\n    assert escape_silent(None) == Markup()\n    assert escape(None) == Markup(None)\n    assert escape_silent(\"<foo>\") == Markup(\"&lt;foo&gt;\")\n\n\ndef test_splitting() -> None:\n    expect = [Markup(\"a\"), Markup(\"b\")]\n    assert Markup(\"a b\").split() == expect\n    assert Markup(\"a b\").rsplit() == expect\n    assert Markup(\"a\\nb\").splitlines() == expect\n\n\ndef test_mul() -> None:",
+    "file_path": "tests/test_markupsafe.py",
+    "file_name": "test_markupsafe.py",
+    "language": "python",
+    "start_line": 151,
+    "end_line": 190,
+    "chunk_index": 5
+  },
+  {
+    "content": "\n\ndef test_splitting() -> None:\n    expect = [Markup(\"a\"), Markup(\"b\")]\n    assert Markup(\"a b\").split() == expect\n    assert Markup(\"a b\").rsplit() == expect\n    assert Markup(\"a\\nb\").splitlines() == expect\n\n\ndef test_mul() -> None:\n    assert Markup(\"a\") * 3 == Markup(\"aaa\")\n\n\ndef test_escape_return_type() -> None:\n    assert isinstance(escape(\"a\"), Markup)\n    assert isinstance(escape(Markup(\"a\")), Markup)\n\n    class Foo:\n        def __html__(self) -> str:\n            return \"<strong>Foo</strong>\"\n\n    assert isinstance(escape(Foo()), Markup)\n\n\ndef test_soft_str() -> None:\n    assert type(soft_str(\"\")) is str  # noqa: E721\n    assert type(soft_str(Markup())) is Markup  # noqa: E721\n    assert type(soft_str(15)) is str  # noqa: E721",
+    "file_path": "tests/test_markupsafe.py",
+    "file_name": "test_markupsafe.py",
+    "language": "python",
+    "start_line": 181,
+    "end_line": 208,
+    "chunk_index": 6
+  }
+]

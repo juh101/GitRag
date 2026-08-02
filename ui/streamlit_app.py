@@ -194,12 +194,15 @@ def render_documents_section() -> None:
         st.markdown("</div>", unsafe_allow_html=True)
         return
 
-    max_files_to_show = st.slider(
-        "Number of files to show",
-        min_value=5,
-        max_value=min(100, len(documents)),
-        value=min(10, len(documents)),
-    )
+    if len(documents) == 1:
+        max_files_to_show = 1
+    else:
+        max_files_to_show = st.slider(
+            "Number of files to show",
+            min_value=1,
+            max_value=min(100, len(documents)),
+            value=min(10, len(documents)),
+        )
 
     for document in documents[:max_files_to_show]:
         with st.expander(
@@ -230,12 +233,15 @@ def render_chunks_section() -> None:
         st.markdown("</div>", unsafe_allow_html=True)
         return
 
-    max_chunks_to_show = st.slider(
-        "Number of chunks to show",
-        min_value=5,
-        max_value=min(100, len(chunks)),
-        value=min(10, len(chunks)),
-    )
+    if len(chunks) == 1:
+        max_chunks_to_show = 1
+    else:
+        max_chunks_to_show = st.slider(
+            "Number of chunks to show",
+            min_value=1,
+            max_value=min(100, len(chunks)),
+            value=min(10, len(chunks)),
+        )
 
     for chunk in chunks[:max_chunks_to_show]:
         with st.expander(
@@ -247,7 +253,6 @@ def render_chunks_section() -> None:
             )
 
     st.markdown("</div>", unsafe_allow_html=True)
-
 
 def render_future_query_section() -> None:
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
