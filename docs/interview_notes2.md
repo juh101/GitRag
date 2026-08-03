@@ -806,3 +806,11 @@ If an interviewer asks:
 A good answer is:
 
 "The embedding model is the most expensive component to initialize because it loads neural network weights into memory and takes around a couple of seconds. The FAISS index and metadata are comparatively lightweight to load. I optimized the largest bottleneck first. If the application needed to serve many repositories or high query throughput, I would extend the same caching strategy to FAISS indices as well."
+
+Interviewer puch sakta hai:
+
+Why did you use Dependency Injection?
+
+Tum confidently bol sakte ho:
+
+"I wanted AnswerGenerator to focus only on orchestrating the RAG pipeline. Instead of creating its own dependencies, it receives them from the application. This reduces coupling, improves testability, and allows me to replace components like the LLM or retriever without modifying AnswerGenerator."
