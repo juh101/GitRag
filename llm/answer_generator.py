@@ -6,9 +6,6 @@ from llm.llm_client import LLMClient
 class AnswerGenerator:
     """
     Coordinates the complete RAG pipeline.
-
-    It does not know HOW retrieval or LLM works.
-    It simply connects all components together.
     """
 
     def __init__(
@@ -26,7 +23,7 @@ class AnswerGenerator:
         self,
         question: str,
         top_k: int = 5,
-    ) -> str:
+    ) -> dict:
 
         if not question.strip():
             raise ValueError("Question cannot be empty.")
@@ -45,4 +42,7 @@ class AnswerGenerator:
             prompt,
         )
 
-        return answer 
+        return {
+            "answer": answer,
+            "sources": retrieved_chunks,
+        }

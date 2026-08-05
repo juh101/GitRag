@@ -814,3 +814,9 @@ Why did you use Dependency Injection?
 Tum confidently bol sakte ho:
 
 "I wanted AnswerGenerator to focus only on orchestrating the RAG pipeline. Instead of creating its own dependencies, it receives them from the application. This reduces coupling, improves testability, and allows me to replace components like the LLM or retriever without modifying AnswerGenerator."
+
+Interviewer: Why did you change the return type from str to dict?
+
+Answer:
+
+"The frontend needed not only the generated answer but also the retrieved source chunks to show citations. Returning a dictionary allowed the backend to send all related information in a single response, avoiding a second FAISS retrieval and making the API more extensible for future metadata like token usage or response time."

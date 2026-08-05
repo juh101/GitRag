@@ -75,7 +75,7 @@ def ingest_repository(repo_url: str):
     print(f"FAISS index saved to: {index_path}")
     print(f"Metadata saved to: {metadata_path}")
 
-    return documents, chunks
+    return repository_path, documents, chunks
 
 
 def main() -> None:
@@ -90,7 +90,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    documents, chunks = ingest_repository(args.repo_url)
+    repository_path, documents, chunks = ingest_repository(args.repo_url)
 
     if not documents:
         print("No supported files found.")
