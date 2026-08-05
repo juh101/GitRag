@@ -1,72 +1,41 @@
 import streamlit as st
 
-
 def render_sources() -> None:
-    """
-    Display the retrieved repository sources used to answer
-    the latest question.
-    """
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown("#### 📘 Sources")
+    st.caption("Retrieved code snippets for the answer.")
 
-    if not st.session_state.repository_indexed:
-        return
-
-    sources = st.session_state.retrieved_sources
+    sources = st.session_state.get("retrieved_sources", [])
 
     if not sources:
+        st.info("No sources retrieved yet. Ask a question to view matching code context.")
+        st.markdown('</div>', unsafe_allow_html=True)
         return
 
-    st.markdown("---")
+    for idx, src in enumerate(sources):
+        file_path = src.get("file_path", f"File {idx+1}")
+        start_line = src.get("start_line", 0)
+        end_line = src.get("end_line", 0)
+        score = src.get("score", 0.0)
+        content = src.get("content", "")
+        lang = src.get("language", "python")
 
-    st.markdown(
-        """
-        <div class="section-title">
-            📚 Sources
-        </div>
-        <div class="section-subtitle">
-            These code snippets were retrieved from the repository
-            before generating the answer.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+        match_pct = int(score * 100) if score <= 1.0 else min(int(score), 99)
 
-    for index, source in enumerate(sources, start=1):
+        st.markdown(f"""
+            <div class="source-card">
+                <div class="source-card-header">
+                    <span class="source-filename">📄 {file_path}</span>
+                    <span class="status-badge-green">{match_pct}% match</span>
+                </div>
+                <div class="source-lines">Lines {start_line} - {end_line}</div>
+            </div>
+        """, unsafe_allow_html=True)
 
-        similarity = source.get("score", 0.0)
+        with st.expander(f"Inspect Snippet ({file_path})"):
+            st.code(
+                content,
+                language=lang if lang != "unknown" else None
+            )
 
-        with st.container(border=True):
-
-            col1, col2 = st.columns([5, 1])
-
-            with col1:
-
-                st.markdown(
-                    f"### 📄 {source['file_name']}"
-                )
-
-                st.caption(source["file_path"])
-
-                st.write(
-                    f"**Lines:** "
-                    f"{source['start_line']} - {source['end_line']}"
-                )
-
-            with col2:
-
-                st.metric(
-                    "Match",
-                    f"{similarity * 100:.0f}%",
-                )
-
-            with st.expander("View Retrieved Code"):
-
-                st.code(
-                    source["content"],
-                    language=(
-                        source["language"]
-                        if source["language"] != "unknown"
-                        else None
-                    ),
-                )
-
-        st.markdown("")
+    st.markdown('</div>', unsafe_allow_html=True)

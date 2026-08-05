@@ -1,30 +1,26 @@
 import streamlit as st
 
-
-def initialize_session_state() -> None:
-    """
-    Initialize all session state variables used across the app.
-    """
-
+def init_session_state() -> None:
+    """Initialize all app-level session state variables."""
     defaults = {
-        "pending_question": None,
+        "theme": "Dark",
         "repository_path": None,
-        "repository_name": "",
         "repository_owner": "",
+        "repository_name": "",
         "documents": [],
         "chunks": [],
-        "answer_generator": None,
+        "repository_indexed": False,
         "retriever": None,
+        "answer_generator": None,
         "messages": [],
+        "pending_question": None,
         "current_answer": "",
         "retrieved_sources": [],
-        "repository_indexed": False,
-        "is_processing": False,
         "stats": {
             "files": 0,
             "chunks": 0,
-            "languages": 0,
-        },
+            "languages": 0
+        }
     }
 
     for key, value in defaults.items():

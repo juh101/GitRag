@@ -1,117 +1,61 @@
 import streamlit as st
 
-
-SUGGESTED_QUESTIONS = [
-    "What is the overall architecture of this repository?",
-    "Where is authentication implemented?",
-    "Explain the project structure.",
-    "Which files handle API requests?",
-]
-
-
 def render_chat() -> None:
-    """
-    Render the AI chat interface.
-    """
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown("#### 💬 Ask Your Repository")
+    st.caption("Ask anything about the indexed repository.")
 
-    st.markdown("---")
-
-    st.markdown(
-        """
-        <div class="section-title">
-            💬 Ask Your Repository
-        </div>
-        <div class="section-subtitle">
-            Ask anything about the indexed repository.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    if not st.session_state.repository_indexed:
-        st.info("Index a repository to begin chatting.")
+    if not st.session_state.get("repository_indexed"):
+        st.info("Please index a GitHub repository above to unlock the Copilot workspace.")
+        st.markdown('</div>', unsafe_allow_html=True)
         return
 
-    if not st.session_state.messages:
+    # Suggested Prompts Section
+    if not st.session_state.get("messages"):
+        st.write("Try asking:")
+        q1, q2 = st.columns(2)
+        q3, q4 = st.columns(2)
 
-        st.markdown("#### Try asking")
+        if q1.button("↗ What is the overall architecture?", use_container_width=True):
+            st.session_state.pending_question = "What is the overall architecture?"
+        if q2.button("↗ Where is authentication implemented?", use_container_width=True):
+            st.session_state.pending_question = "Where is authentication implemented?"
+        if q3.button("↗ Explain the project structure.", use_container_width=True):
+            st.session_state.pending_question = "Explain the project structure."
+        if q4.button("↗ Which files handle API requests?", use_container_width=True):
+            st.session_state.pending_question = "Which files handle API requests?"
 
-        cols = st.columns(2)
+    # Message History Rendering
+    for msg in st.session_state.get("messages", []):
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-        for i, question in enumerate(SUGGESTED_QUESTIONS):
+    # Handle Input OR Suggested Click
+    query_input = st.chat_input("Ask a question about this repository...")
+    if st.session_state.get("pending_question"):
+        query_input = st.session_state.pop("pending_question")
 
-            with cols[i % 2]:
+    if query_input:
+        st.session_state.messages.append({"role": "user", "content": query_input})
+        with st.chat_message("user"):
+            st.markdown(query_input)
 
-                if st.button(
-                    question,
-                    key=f"suggestion_{i}",
-                    use_container_width=True,
-                ):
+        with st.chat_message("assistant"):
+            with st.spinner("Retrieving relevant code and analyzing context..."):
+                try:
+                    generator = st.session_state.answer_generator
+                    result = generator.answer_question(question=query_input, top_k=5)
 
-                    st.session_state.pending_question = question
+                    answer = result.get("answer", "")
+                    sources = result.get("sources", [])
+
+                    st.markdown(answer)
+                    
+                    st.session_state.current_answer = answer
+                    st.session_state.retrieved_sources = sources
+                    st.session_state.messages.append({"role": "assistant", "content": answer})
                     st.rerun()
+                except Exception as e:
+                    st.error(f"Error generating answer: {str(e)}")
 
-        st.markdown("<br>", unsafe_allow_html=True)
-
-    for message in st.session_state.messages:
-
-        with st.chat_message(message["role"]):
-
-            st.markdown(message["content"])
-
-    prompt = None
-
-    if "pending_question" in st.session_state:
-
-        prompt = st.session_state.pending_question
-        del st.session_state.pending_question
-
-    else:
-
-        prompt = st.chat_input(
-            "Ask a question about this repository..."
-        )
-
-    if not prompt:
-        return
-
-    st.session_state.messages.append(
-        {
-            "role": "user",
-            "content": prompt,
-        }
-    )
-
-    with st.chat_message("user"):
-
-        st.markdown(prompt)
-
-    with st.chat_message("assistant"):
-
-        placeholder = st.empty()
-
-        with st.spinner("Thinking..."):
-
-            try:
-
-                answer, sources = (
-                    st.session_state.answer_generator.answer_question(
-                        prompt
-                    )
-                )
-
-                placeholder.markdown(answer)
-
-                st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": answer,
-                    }
-                )
-
-                st.session_state.current_answer = answer
-                st.session_state.retrieved_sources = sources
-
-            except Exception as error:
-
-                placeholder.error(str(error))
+    st.markdown('</div>', unsafe_allow_html=True)
