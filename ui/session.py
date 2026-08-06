@@ -1,7 +1,7 @@
 import streamlit as st
 
 def init_session_state() -> None:
-    """Initialize all app-level session state variables."""
+    """Initialize session state variables including RAG tuning parameters."""
     defaults = {
         "theme": "Dark",
         "repository_path": None,
@@ -20,7 +20,11 @@ def init_session_state() -> None:
             "files": 0,
             "chunks": 0,
             "languages": 0
-        }
+        },
+        # RAG Parameters
+        "top_k": 5,
+        "temperature": 0.2,
+        "show_file_tree": False
     }
 
     for key, value in defaults.items():

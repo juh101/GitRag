@@ -1,61 +1,73 @@
+import time
 import streamlit as st
 
 def render_chat() -> None:
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    st.markdown("#### 💬 Ask Your Repository")
-    st.caption("Ask anything about the indexed repository.")
+    st.markdown("""
+        <div class="glass-card">
+            <div class="card-header-title">🗨️ Ask Your Repository</div>
+            <div class="card-header-sub">Ask questions to retrieve code and generate answers with Gemini.</div>
+        </div>
+    """, unsafe_allow_html=True)
 
     if not st.session_state.get("repository_indexed"):
-        st.info("Please index a GitHub repository above to unlock the Copilot workspace.")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.info("Please index a GitHub repository above to start asking questions.")
         return
 
-    # Suggested Prompts Section
+    # Suggested Prompt Buttons
     if not st.session_state.get("messages"):
-        st.write("Try asking:")
-        q1, q2 = st.columns(2)
-        q3, q4 = st.columns(2)
+        st.caption("Try asking:")
+        p1, p2 = st.columns(2)
+        p3, p4 = st.columns(2)
 
-        if q1.button("↗ What is the overall architecture?", use_container_width=True):
+        if p1.button("↗ What is the overall architecture?", use_container_width=True):
             st.session_state.pending_question = "What is the overall architecture?"
-        if q2.button("↗ Where is authentication implemented?", use_container_width=True):
-            st.session_state.pending_question = "Where is authentication implemented?"
-        if q3.button("↗ Explain the project structure.", use_container_width=True):
+        if p2.button("↗ Where is the core entry point?", use_container_width=True):
+            st.session_state.pending_question = "Where is the core entry point?"
+        if p3.button("↗ Explain the project structure.", use_container_width=True):
             st.session_state.pending_question = "Explain the project structure."
-        if q4.button("↗ Which files handle API requests?", use_container_width=True):
-            st.session_state.pending_question = "Which files handle API requests?"
+        if p4.button("↗ Which files handle main logic?", use_container_width=True):
+            st.session_state.pending_question = "Which files handle main logic?"
 
-    # Message History Rendering
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Message History
     for msg in st.session_state.get("messages", []):
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    # Handle Input OR Suggested Click
-    query_input = st.chat_input("Ask a question about this repository...")
+    # User Input
+    user_query = st.chat_input("Ask a question about this repository...")
     if st.session_state.get("pending_question"):
-        query_input = st.session_state.pop("pending_question")
+        user_query = st.session_state.pop("pending_question")
 
-    if query_input:
-        st.session_state.messages.append({"role": "user", "content": query_input})
+    if user_query:
+        st.session_state.messages.append({"role": "user", "content": user_query})
         with st.chat_message("user"):
-            st.markdown(query_input)
+            st.markdown(user_query)
 
         with st.chat_message("assistant"):
-            with st.spinner("Retrieving relevant code and analyzing context..."):
+            top_k = st.session_state.get("top_k", 5)
+            
+            with st.spinner("Retrieving sources & generating answer..."):
                 try:
                     generator = st.session_state.answer_generator
-                    result = generator.answer_question(question=query_input, top_k=5)
+                    result = generator.answer_question(question=user_query, top_k=top_k)
 
-                    answer = result.get("answer", "")
-                    sources = result.get("sources", [])
+                    full_answer = result.get("answer", "")
+                    srcs = result.get("sources", [])
 
-                    st.markdown(answer)
+                    # Response Streaming Effect
+                    message_placeholder = st.empty()
+                    chunked_text = ""
+                    for char in full_answer.split(" "):
+                        chunked_text += char + " "
+                        message_placeholder.markdown(chunked_text + "▌")
+                        time.sleep(0.02)
                     
-                    st.session_state.current_answer = answer
-                    st.session_state.retrieved_sources = sources
-                    st.session_state.messages.append({"role": "assistant", "content": answer})
+                    message_placeholder.markdown(full_answer)
+
+                    st.session_state.messages.append({"role": "assistant", "content": full_answer})
+                    st.session_state.retrieved_sources = srcs
                     st.rerun()
                 except Exception as e:
-                    st.error(f"Error generating answer: {str(e)}")
-
-    st.markdown('</div>', unsafe_allow_html=True)
+                    st.error(f"Error: {str(e)}")

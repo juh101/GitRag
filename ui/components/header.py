@@ -2,19 +2,12 @@ import streamlit as st
 
 def render_header() -> None:
     st.markdown("""
-        <div style="margin-bottom: 1.25rem;">
-            <div class="hero-title">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="font-size: 1.85rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                 ✨ GitHub Repository AI Assistant
             </div>
-            <div class="hero-subtitle">
+            <div style="font-size: 0.95rem; margin-top: 0.35rem;">
                 Understand any GitHub repository using Retrieval-Augmented Generation.
-            </div>
-            <div class="pipeline-ribbon">
-                <span class="pipeline-step">Clone</span> →
-                <span class="pipeline-step">Index</span> →
-                <span class="pipeline-step">Retrieve</span> →
-                <span class="pipeline-step">Ask Questions</span> →
-                <span class="pipeline-step">Get Context-Aware Answers</span>
             </div>
         </div>
     """, unsafe_allow_html=True)

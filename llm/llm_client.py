@@ -8,6 +8,7 @@ load_dotenv()
 
 
 class LLMClient:
+    
     """
     Wrapper around the Gemini API.
 
@@ -15,7 +16,7 @@ class LLMClient:
     and returning the generated response.
     """
 
-    DEFAULT_MODEL = "gemini-2.5-flash"
+    DEFAULT_MODEL = "gemini-flash-lite-latest"
 
     def __init__(
         self,
@@ -36,12 +37,15 @@ class LLMClient:
         self,
         prompt: str,
     ) -> str:
-        """
-        Send a prompt to Gemini and return the generated text.
-        """
 
-        if not prompt.strip():
-            raise ValueError("Prompt cannot be empty.")
+        print("=" * 80)
+        print(f"Model: {self.model_name}")
+        print(f"Prompt length: {len(prompt)}")
+        print("=" * 80)
+
+        print(prompt[:1000])
+
+        print("=" * 80)
 
         response = self.client.models.generate_content(
             model=self.model_name,

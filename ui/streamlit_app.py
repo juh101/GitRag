@@ -1,7 +1,6 @@
 from pathlib import Path
 import sys
 
-# Setup Project Root Path Insertion
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -23,19 +22,21 @@ def main() -> None:
         initial_sidebar_state="expanded"
     )
 
-    # 1. State Setup
     init_session_state()
 
-    # 2. Sidebar Setup & Theme Application
+    # 1. Render Sidebar to pick up state interactions
     render_sidebar()
+
+    # 2. Apply theme according to session state
     apply_theme(st.session_state.get("theme", "Dark"))
 
-    # 3. Main Workspace Rendering
+    # 3. Main Dashboard Layout
     render_header()
     render_repository()
 
-    # 4. Split Column Layout (60% Chat / 40% Sources)
-    col_chat, col_sources = st.columns([6, 4], gap="medium")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col_chat, col_sources = st.columns([6, 4], gap="large")
 
     with col_chat:
         render_chat()
