@@ -1,14 +1,12 @@
 import os
-
 from dotenv import load_dotenv
 from google import genai
-
+from google.genai import types
 
 load_dotenv()
 
 
 class LLMClient:
-    
     """
     Wrapper around the Gemini API.
 
@@ -36,10 +34,11 @@ class LLMClient:
     def generate_answer(
         self,
         prompt: str,
+        temperature: float = 0.2,
     ) -> str:
 
         print("=" * 80)
-        print(f"Model: {self.model_name}")
+        print(f"Model: {self.model_name} | Temperature: {temperature}")
         print(f"Prompt length: {len(prompt)}")
         print("=" * 80)
 
@@ -47,9 +46,14 @@ class LLMClient:
 
         print("=" * 80)
 
+        config = types.GenerateContentConfig(
+            temperature=temperature
+        )
+
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=prompt,
+            config=config,
         )
 
         if response.text is None:

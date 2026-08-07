@@ -23,6 +23,7 @@ class AnswerGenerator:
         self,
         question: str,
         top_k: int = 5,
+        temperature: float = 0.2,
     ) -> dict:
 
         if not question.strip():
@@ -40,6 +41,7 @@ class AnswerGenerator:
 
         answer = self.llm_client.generate_answer(
             prompt,
+            temperature=temperature,
         )
 
         return {

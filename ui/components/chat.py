@@ -1,6 +1,7 @@
 import time
 import streamlit as st
 
+
 def render_chat() -> None:
     st.markdown("""
         <div class="glass-card">
@@ -47,11 +48,16 @@ def render_chat() -> None:
 
         with st.chat_message("assistant"):
             top_k = st.session_state.get("top_k", 5)
-            
+            temperature = st.session_state.get("temperature", 0.2)
+
             with st.spinner("Retrieving sources & generating answer..."):
                 try:
                     generator = st.session_state.answer_generator
-                    result = generator.answer_question(question=user_query, top_k=top_k)
+                    result = generator.answer_question(
+                        question=user_query,
+                        top_k=top_k,
+                        temperature=temperature,
+                    )
 
                     full_answer = result.get("answer", "")
                     srcs = result.get("sources", [])
@@ -63,7 +69,7 @@ def render_chat() -> None:
                         chunked_text += char + " "
                         message_placeholder.markdown(chunked_text + "▌")
                         time.sleep(0.02)
-                    
+
                     message_placeholder.markdown(full_answer)
 
                     st.session_state.messages.append({"role": "assistant", "content": full_answer})
