@@ -1,5 +1,16 @@
+# Python
 venv/
+.venv/
 __pycache__/
-repo_storage/
-*.pyc
+*.py[cod]
+.pytest_cache/
+
+# Local data and secrets
 .env
+repo_storage/
+
+# Node / Vite
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
