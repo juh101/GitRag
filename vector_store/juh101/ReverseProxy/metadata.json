@@ -1,0 +1,38 @@
+[
+  {
+    "content": "# Python cache\n__pycache__/\n*.py[cod]\n*.egg-info/\n\n# Virtual environments\n.venv/\nvenv/\n\n# Environment variables and secrets\n.env\n.env.*\n!.env.example\n\n# Testing\n.pytest_cache/\n.coverage\nhtmlcov/\n\n# Build artifacts\nbuild/\ndist/\n\n# Editors\n.vscode/\n.idea/\n\n# OS files\n.DS_Store\nThumbs.db",
+    "file_path": ".gitignore",
+    "file_name": ".gitignore",
+    "language": "unknown",
+    "start_line": 1,
+    "end_line": 30,
+    "chunk_index": 0
+  },
+  {
+    "content": "# revProxy\n\nA Python-based security gateway that acts as a reverse proxy\nfor backend services.\n\n## Planned Features\n\n- HTTP request forwarding\n- JWT authentication and role-based access\n- Token-bucket rate limiting\n- Rule-based request filtering\n- Round-robin load balancing\n- Backend health checks and failover\n- Structured logging and metrics\n- Automated tests\n- Docker and Docker Compose\n\n## Tech Stack\n\n- Python\n- FastAPI\n- HTTPX\n- PyJWT\n- Pytest\n- Locust\n- Docker\n\n## Status\n\nUnder development.",
+    "file_path": "README.md",
+    "file_name": "README.md",
+    "language": "markdown",
+    "start_line": 1,
+    "end_line": 30,
+    "chunk_index": 0
+  },
+  {
+    "content": "fastapi\nuvicorn[standard]\nhttpx\npytest",
+    "file_path": "requirements.txt",
+    "file_name": "requirements.txt",
+    "language": "text",
+    "start_line": 1,
+    "end_line": 4,
+    "chunk_index": 0
+  },
+  {
+    "content": "\nimport asyncio\nimport os\n\nfrom fastapi import FastAPI\n\napp = FastAPI(title=\"Demo Backend\")\n\nBACKEND_NAME = os.getenv(\"BACKEND_NAME\", \"backend-1\")\n\n\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"ok\", \"backend\": BACKEND_NAME}\n\n\n@app.get(\"/whoami\")\nasync def whoami():\n    return {\"message\": \"Request handled by backend\", \"backend\": BACKEND_NAME}\n\n\n@app.get(\"/api/data\")\nasync def get_data():\n    return {\n        \"message\": \"Hello from the backend!\",\n        \"backend\": BACKEND_NAME,\n    }\n\n\n@app.get(\"/slow\")\nasync def slow_response():\n    await asyncio.sleep(2)\n    return {\"message\": \"Slow response completed\", \"backend\": BACKEND_NAME}",
+    "file_path": "app/backend/main.py",
+    "file_name": "main.py",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 33,
+    "chunk_index": 0
+  }
+]
